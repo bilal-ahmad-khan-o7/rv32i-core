@@ -1,0 +1,9 @@
+*.vcd
+*.fst
+*.vvp
+*.elf
+*.o
+obj_dir/
+build/
+riscof_work/
+__pycache__/

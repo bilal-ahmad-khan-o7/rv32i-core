@@ -1,0 +1,218 @@
+% diagrams.tex - all architecture diagrams of the single-cycle RV32I core in one PDF.
+% Build (from this folder):   pdflatex diagrams.tex
+% Every fig_*.tex also compiles on its own:   pdflatex fig_datapath.tex
+\documentclass[10pt]{article}
+\usepackage[a4paper, landscape, margin=1.3cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{tikz}
+\usepackage[mode=tex]{standalone}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{caption}
+\usepackage[hidelinks]{hyperref}
+\input{rv32i_style}
+\captionsetup{font=small, labelfont=bf}
+\newcommand{\sv}[1]{\texttt{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries\color{ink} Single-cycle RV32I core --- architecture diagrams}\\[4pt]
+  {\large Iteration 1 of the pipelined RV32I + INT8 SIMD project \quad$\cdot$\quad RTL in \sv{single\_cycle/rtl/}}
+\end{center}
+
+\noindent The core executes one instruction per clock cycle. It is built from five
+\emph{stage modules} (\sv{if\_stage}, \sv{id\_stage}, \sv{ex\_stage}, \sv{mem\_stage},
+\sv{wb\_stage}); \sv{riscv\_core} only wires them together. In iteration 2 the pipeline
+registers IF/ID, ID/EX, EX/MEM and MEM/WB go on exactly the wires that cross the stage
+borders in Figure~\ref{fig:dp}, and the stage modules stay as they are.
+Every name in the figures is the exact SystemVerilog port or signal name.
+
+\medskip
+\noindent\textbf{How to read the figures.} Thick border: holds state. Thin border: combinational.
+Green trapezium: multiplexer (the numbers are the select values). Solid navy: data.
+Dashed orange: control. A small square on a stage border is a module port; \texttt{/32} is a bus width;
+a dot joins wires. In Figure~\ref{fig:dp}, rounded flags such as \fbox{\sv{rs2\_data}} are net labels
+(the same wire as the signal of that name), and each select is drawn as a named dashed stub.
+
+\medskip
+\noindent\begin{minipage}{\linewidth}\centering
+  \includestandalone[width=0.9\linewidth]{fig_datapath}
+  \captionof{figure}{The whole single-cycle datapath (\sv{rtl/riscv\_core.sv}), with the five stage modules shaded.
+           \sv{redirect\_pc} / \sv{pc\_redirect} run from EX back to IF (next PC);
+           \sv{wb\_data} runs from WB back to ID (register-file write port).}
+  \label{fig:dp}
+\end{minipage}
+
+% ------------------------------------------------------------------
+\clearpage
+\section*{Control unit (\sv{rtl/control.sv}, PDF Table 9.2)}
+A dash means ``does not matter''; the code then drives the safe default (0 / \sv{ALU\_ADD} / \sv{IMM\_I} / \sv{WB\_ALU}).
+\sv{reg\_write} and \sv{mem\_write} are never don't-cares. \sv{funct3} and \sv{instr[30]} (\sv{funct7\_5}) refine the ALU operation
+for \sv{OP\_REG} / \sv{OP\_IMM}; \sv{instr[30]} selects \sv{sub} \emph{only} in \sv{OP\_REG}, and \sv{sra}/\sv{srai} in both.
+
+\medskip
+\begin{center}
+\small
+\begin{tabular}{l l c c c l c c c c c c c}
+\toprule
+group & opcode & \sv{reg\_} & \sv{alu\_src} & \sv{alu\_src} & \sv{alu\_op} & \sv{imm\_} & \sv{mem\_} & \sv{mem\_} & \sv{wb\_} & \sv{branch} & \sv{jump} & \sv{jalr}\\
+      &        & \sv{write} & \sv{\_a\_pc} & \sv{\_b\_imm} &        & \sv{sel}  & \sv{read} & \sv{write} & \sv{sel} &  &  & \\
+\midrule
+add sub \dots\ and      & \sv{0110011} OP\_REG    & 1 & 0 & 0 & f3 / f7  & --  & 0 & 0 & ALU & 0 & 0 & 0\\
+addi slti \dots\ srai   & \sv{0010011} OP\_IMM    & 1 & 0 & 1 & f3       & I   & 0 & 0 & ALU & 0 & 0 & 0\\
+lb lh lw lbu lhu        & \sv{0000011} OP\_LOAD   & 1 & 0 & 1 & ADD      & I   & 1 & 0 & MEM & 0 & 0 & 0\\
+sb sh sw                & \sv{0100011} OP\_STORE  & 0 & 0 & 1 & ADD      & S   & 0 & 1 & --  & 0 & 0 & 0\\
+beq \dots\ bgeu         & \sv{1100011} OP\_BRANCH & 0 & --& --& --       & B   & 0 & 0 & --  & 1 & 0 & 0\\
+lui                     & \sv{0110111} OP\_LUI    & 1 & --& 1 & PASSB    & U   & 0 & 0 & ALU & 0 & 0 & 0\\
+auipc                   & \sv{0010111} OP\_AUIPC  & 1 & 1 & 1 & ADD      & U   & 0 & 0 & ALU & 0 & 0 & 0\\
+jal                     & \sv{1101111} OP\_JAL    & 1 & --& --& --       & J   & 0 & 0 & PC4 & 0 & 1 & 0\\
+jalr                    & \sv{1100111} OP\_JALR   & 1 & 0 & 1 & ADD      & I   & 0 & 0 & PC4 & 0 & 0 & 1\\
+fence                   & \sv{0001111} OP\_FENCE  & 0 & --& --& --       & --  & 0 & 0 & --  & 0 & 0 & 0\\
+ecall ebreak            & \sv{1110011} OP\_SYSTEM & 0 & --& --& --       & --  & 0 & 0 & --  & 0 & 0 & 0\\
+anything else           & ---                     & 0 & --& --& --       & --  & 0 & 0 & --  & 0 & 0 & 0\\
+\bottomrule
+\end{tabular}
+\end{center}
+\noindent Extra outputs: \sv{system} = 1 for \sv{OP\_SYSTEM} (the testbench stops on \sv{ebreak}),
+\sv{illegal} = 1 for any other unknown opcode (including custom-0, \sv{0001011}, reserved for the SIMD extension).
+
+\bigskip
+\noindent\begin{tabular}{@{}L{0.48\linewidth} L{0.48\linewidth}@{}}
+\textbf{ALU operations} (\sv{riscv\_pkg::ALU\_*})\par\smallskip
+\small
+\begin{tabular}{r l l}
+\toprule
+code & name & result\\ \midrule
+0 & \sv{ALU\_ADD}  & a + b\\
+1 & \sv{ALU\_SUB}  & a -- b\\
+2 & \sv{ALU\_SLL}  & a $\ll$ b[4:0]\\
+3 & \sv{ALU\_SLT}  & signed a $<$ b\\
+4 & \sv{ALU\_SLTU} & unsigned a $<$ b\\
+5 & \sv{ALU\_XOR}  & a \^{} b\\
+6 & \sv{ALU\_SRL}  & a $\gg$ b[4:0] (zeros in)\\
+7 & \sv{ALU\_SRA}  & a $\gg$ b[4:0] (sign in)\\
+8 & \sv{ALU\_OR}   & a | b\\
+9 & \sv{ALU\_AND}  & a \& b\\
+10& \sv{ALU\_PASSB}& b (for \sv{lui})\\ \bottomrule
+\end{tabular}
+&
+\textbf{Immediate formats} (\sv{riscv\_pkg::IMM\_*})\par\smallskip
+\small
+\begin{tabular}{l l}
+\toprule
+sel & value\\ \midrule
+\sv{IMM\_I} & sext(\sv{instr[31:20]})\\
+\sv{IMM\_S} & sext(\{\sv{instr[31:25]}, \sv{instr[11:7]}\})\\
+\sv{IMM\_B} & sext(\{\sv{[31]}, \sv{[7]}, \sv{[30:25]}, \sv{[11:8]}, 0\})\\
+\sv{IMM\_U} & \{\sv{instr[31:12]}, 12'b0\}\\
+\sv{IMM\_J} & sext(\{\sv{[31]}, \sv{[19:12]}, \sv{[20]}, \sv{[30:21]}, 0\})\\ \bottomrule
+\end{tabular}
+
+\bigskip
+\textbf{Write-back select} (\sv{riscv\_pkg::WB\_*}): \sv{WB\_ALU} = 0, \sv{WB\_MEM} = 1, \sv{WB\_PC4} = 2.
+\end{tabular}
+
+% ------------------------------------------------------------------
+\clearpage
+\section*{The five stage modules}
+Port lists are the exact module ports. The ``connects to'' column is the wiring in \sv{riscv\_core.sv};
+in the pipeline, every signal that crosses into the next stage is stored in that stage's pipeline register.
+
+\begin{figure}[h]
+  \centering
+  \includestandalone[width=0.62\linewidth]{fig_if_stage}
+  \caption{\sv{if\_stage} (\sv{rtl/if\_stage.sv}): PC register, instruction memory, \sv{pc+4}, next-PC mux.}
+\end{figure}
+\begin{center}\small
+\begin{tabular}{l c c L{11cm}}
+\toprule
+port & dir & width & connects to\\ \midrule
+\sv{clk}, \sv{rst} & in & 1 & core clock, synchronous reset (\sv{pc} $\leftarrow$ \sv{RESET\_ADDR})\\
+\sv{pc\_redirect} & in & 1 & \sv{ex\_stage.pc\_redirect}\\
+\sv{redirect\_pc} & in & 32 & \sv{ex\_stage.redirect\_pc}\\
+\sv{pc} & out & 32 & \sv{ex\_stage.pc}, \sv{dbg\_pc}\\
+\sv{pc\_plus4} & out & 32 & \sv{wb\_stage.pc\_plus4}\\
+\sv{instr} & out & 32 & \sv{id\_stage.instr}, \sv{dbg\_instr}\\ \bottomrule
+\end{tabular}
+\end{center}
+
+\clearpage
+\noindent\begin{minipage}[c]{0.5\linewidth}\centering
+  \includestandalone[width=\linewidth]{fig_id_stage}
+  \captionof{figure}{\sv{id\_stage} (\sv{rtl/id\_stage.sv}): field slicing, control unit, register file, immediate generator.}
+\end{minipage}\hfill
+\begin{minipage}[c]{0.47\linewidth}\small
+\begin{tabular}{L{4.2cm} c c L{5.5cm}}
+\toprule
+port & dir & width & connects to\\ \midrule
+\sv{clk} & in & 1 & core clock (register-file write)\\
+\sv{instr} & in & 32 & \sv{if\_stage.instr}\\
+\sv{rf\_we} & in & 1 & \sv{reg\_write \& \textasciitilde rst}\\
+\sv{rf\_waddr} & in & 5 & \sv{rd\_addr} (this stage's own output)\\
+\sv{rf\_wdata} & in & 32 & \sv{wb\_stage.wb\_data}\\
+\sv{rs1\_addr}, \sv{rs2\_addr} & out & 5 & not used yet; the pipeline's forwarding and hazard units need them\\
+\sv{rd\_addr} & out & 5 & \sv{rf\_waddr}\\
+\sv{funct3} & out & 3 & \sv{ex\_stage.funct3} (branch condition), \sv{mem\_stage.funct3} (access size)\\
+\sv{rs1\_data} & out & 32 & \sv{ex\_stage.rs1\_data}\\
+\sv{rs2\_data} & out & 32 & \sv{ex\_stage.rs2\_data}, \sv{mem\_stage.store\_data}\\
+\sv{imm} & out & 32 & \sv{ex\_stage.imm}\\
+\sv{reg\_write} & out & 1 & \sv{rf\_we} (gated with \sv{\textasciitilde rst})\\
+\sv{alu\_src\_a\_pc}, \sv{alu\_src\_b\_imm}, \sv{alu\_op}[3:0] & out & & \sv{ex\_stage} operand muxes and ALU\\
+\sv{branch}, \sv{jump}, \sv{jalr} & out & 1 & \sv{ex\_stage} redirect decision\\
+\sv{mem\_read} & out & 1 & not used yet; the pipeline's load-use stall needs it\\
+\sv{mem\_write} & out & 1 & \sv{mem\_stage.mem\_write} (gated with \sv{\textasciitilde rst})\\
+\sv{wb\_sel} & out & 2 & \sv{wb\_stage.wb\_sel}\\
+\sv{illegal}, \sv{system} & out & 1 & \sv{dbg\_illegal}, \sv{dbg\_system} (testbench stop conditions)\\ \bottomrule
+\end{tabular}
+\end{minipage}
+
+\clearpage
+\begin{figure}[h]
+  \centering
+  \includestandalone[width=0.66\linewidth]{fig_ex_stage}
+  \caption{\sv{ex\_stage} (\sv{rtl/ex\_stage.sv}): operand muxes, ALU, branch unit, target adders and the redirect decision.}
+\end{figure}
+\begin{center}\small
+\begin{tabular}{l c c L{11cm}}
+\toprule
+port & dir & width & connects to\\ \midrule
+\sv{pc}, \sv{rs1\_data}, \sv{rs2\_data}, \sv{imm} & in & 32 & from IF / ID\\
+\sv{alu\_src\_a\_pc}, \sv{alu\_src\_b\_imm}, \sv{alu\_op}, \sv{funct3}, \sv{branch}, \sv{jump}, \sv{jalr} & in & & from ID (control, \sv{funct3})\\
+\sv{alu\_y} & out & 32 & \sv{mem\_stage.addr}, \sv{wb\_stage.alu\_y}\\
+\sv{take\_branch} & out & 1 & observation only\\
+\sv{pc\_redirect}, \sv{redirect\_pc} & out & 1, 32 & \sv{if\_stage} (next-PC mux); the pipeline's flush signal later\\ \bottomrule
+\end{tabular}
+\end{center}
+
+\clearpage
+\begin{figure}[h]
+  \centering
+  \includestandalone[width=0.62\linewidth]{fig_mem_stage}
+  \caption{\sv{mem\_stage} (\sv{rtl/mem\_stage.sv}): the load/store unit around the data memory.}
+\end{figure}
+\begin{center}\small
+\begin{tabular}{l c c L{11cm}}
+\toprule
+port & dir & width & connects to\\ \midrule
+\sv{clk} & in & 1 & core clock (data-memory write)\\
+\sv{addr} & in & 32 & \sv{ex\_stage.alu\_y}\\
+\sv{store\_data} & in & 32 & \sv{id\_stage.rs2\_data}\\
+\sv{funct3} & in & 3 & \sv{id\_stage.funct3}\\
+\sv{mem\_write} & in & 1 & \sv{mem\_write \& \textasciitilde rst}\\
+\sv{load\_data} & out & 32 & \sv{wb\_stage.load\_data}\\ \bottomrule
+\end{tabular}
+\end{center}
+
+\bigskip
+\begin{figure}[h]
+  \centering
+  \includestandalone[width=0.42\linewidth]{fig_wb_stage}
+  \caption{\sv{wb\_stage} (\sv{rtl/wb\_stage.sv}): the write-back mux; \sv{wb\_data} returns to \sv{id\_stage.rf\_wdata}.}
+\end{figure}
+
+\end{document}
