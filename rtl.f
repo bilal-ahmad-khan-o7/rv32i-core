@@ -1,0 +1,16 @@
+rtl/riscv_pkg.sv
+rtl/alu.sv
+rtl/branch_unit.sv
+rtl/control.sv
+rtl/dmem.sv
+rtl/imem.sv
+rtl/imm_gen.sv
+rtl/lsu.sv
+rtl/pc_reg.sv
+rtl/regfile.sv
+rtl/if_stage.sv
+rtl/id_stage.sv
+rtl/ex_stage.sv
+rtl/mem_stage.sv
+rtl/wb_stage.sv
+rtl/riscv_core.sv
