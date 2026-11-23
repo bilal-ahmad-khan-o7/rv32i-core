@@ -100,6 +100,8 @@ A store's data is needed in EX too, so `lw x5` followed by `sw x5` also stalls o
 
 ### Hazards
 
+![Load-use stall and taken-branch flush, cycle by cycle](docs/diagrams/pipeline_timing.drawio.svg)
+
 ```text
 forward_a = EX/MEM writes rs1 (rd != 0)  -> FWD_EX_MEM   ex_mem_value: pc_plus4 for jal/jalr, else ex_result
           | MEM/WB writes rs1 (rd != 0)  -> FWD_MEM_WB   wb_data

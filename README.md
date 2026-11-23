@@ -10,7 +10,9 @@ A RISC-V core in SystemVerilog, built step by step from a single-cycle design to
 - **Verified:** both pass the official RISC-V architectural tests (RISCOF, compared with Spike), plus unit testbenches, directed hazard tests and random programs checked against an instruction simulator.
 - **Bit-exact KWS:** every layer matches TFLite's reference kernels byte for byte. The custom instructions make the model 3.48× faster than with `mul` alone.
 
-![The 5-stage pipelined core](pipelined/docs/diagrams/fig_pipeline.png)
+![The 5-stage pipelined core](docs/pipeline_overview.drawio.svg)
+
+Detailed diagrams, with every signal: [single-cycle](single_cycle/docs/diagrams/diagrams.pdf), [pipelined](pipelined/docs/diagrams/diagrams.pdf).
 
 ## Results
 
@@ -35,6 +37,8 @@ The KWS model is one C program, compiled three times. Each build lets the compil
 All three produce the same output bytes. (b) → (c) is the 3.48× from the custom instructions. Build (c) is the one that runs on the FPGA. Accuracy on the 1000 test files is 90.1%, the same as TFLite.
 
 ## Custom instructions
+
+![DOT4.S8 and CLIP.S8 encodings](docs/custom_instr_encoding.drawio.svg)
 
 Both use the custom-0 opcode (`0001011`), R format, funct7 = `0000000`.
 
