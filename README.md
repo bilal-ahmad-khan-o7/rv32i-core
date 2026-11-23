@@ -36,6 +36,12 @@ The KWS model is one C program, compiled three times. Each build lets the compil
 
 All three produce the same output bytes. (b) → (c) is the 3.48× from the custom instructions. Build (c) is the one that runs on the FPGA. Accuracy on the 1000 test files is 90.1%, the same as TFLite.
 
+## Verification
+
+Five levels, from single blocks to the official ISA tests; the first three run on every push.
+
+![Verification strategy](docs/verification.drawio.svg)
+
 ## Custom instructions
 
 ![DOT4.S8 and CLIP.S8 encodings](docs/custom_instr_encoding.drawio.svg)

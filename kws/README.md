@@ -6,6 +6,8 @@ The cores run the MLPerf Tiny keyword-spotting model, a DS-CNN (49 × 10 INT8 MF
 - **Real words.** All 12 real recordings tested give the right word. On the 1000 test files the core's 12 scores and label equal TFLite's on every file, at 90.1% accuracy.
 - **Speed.** DOT4.S8 and CLIP.S8 make the whole model 3.48× faster than `mul` alone.
 
+![The KWS model and the instructions each layer uses](docs/kws_model.drawio.svg)
+
 ## The three builds: (a), (b) and (c)
 
 The same C program, `kws/sw/kws.c`, is compiled three times. Each build lets the compiler use more of the core's instructions, so comparing them shows what each hardware addition is worth.
@@ -21,6 +23,8 @@ The same C program, `kws/sw/kws.c`, is compiled three times. Each build lets the
 **Softmax is not run on the core.** The core stops at the 12 FC outputs and takes their arg-max; those two things are what is compared with TFLite. Softmax did not change the arg-max on any of the 1,007 inputs tested.
 
 ## Results
+
+![KWS cycles per build, to scale](docs/kws_cycles_by_build.drawio.svg)
 
 Builds (a), (b) and (c) are described [above](#the-three-builds-a-b-and-c). Figures are for the single-cycle core, which runs one instruction per clock, so cycles = instructions; the pipelined core's are in [`../pipelined/results.md`](../pipelined/results.md). Figures are means over the 12 real recordings. `kws/results.md` is the generated copy.
 
@@ -48,6 +52,8 @@ Builds (a), (b) and (c) are described [above](#the-three-builds-a-b-and-c). Figu
 | (a) | 333,300,720 | 332,707,205 to 334,407,592 |
 | (b) | 11,724,916 | 11,723,604 to 11,726,091 |
 | (c) | 3,368,932 | 3,368,930 to 3,368,934 |
+
+![Where the cycles go: build (b) vs build (c), by layer type](docs/kws_cycles_by_layer.drawio.svg)
 
 Reading the table:
 
@@ -216,6 +222,7 @@ The last two would have passed before the label became a checked row and before 
 | `model/` | the `.tflite` file (MLPerf Tiny reference model, Apache-2.0) |
 | `inputs/real/` | the 12 real recordings: not committed, see [Inputs](#inputs) |
 | `build.py`, `run_all.py`, `results.md` | builds the C programs; runs the sweeps; the generated results |
+| `docs/` | the figures in this README (draw.io) |
 
 ## Limitations
 

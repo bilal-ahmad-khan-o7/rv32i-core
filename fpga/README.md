@@ -11,10 +11,13 @@ These scripts synthesise, place and route either core for the PYNQ-Z2 (Zynq-7020
 | `rtl/reset_sync.sv` | button and MMCM lock to a reset synchronous to the core clock |
 | `make_mem.py`, `mem/` | the data-memory preload: KWS build (c) with recording `tst_000007_Yes_9` ("Yes") merged in. Not committed (the recording has no open licence): run `python3 fpga/make_mem.py` after recreating the recordings (see [`../kws/README.md`](../kws/README.md#inputs), "Inputs") |
 | `sim/` | an Icarus test of the wrapper (`run_sim.py`), with stand-ins for the two Xilinx primitives |
+| `docs/` | the wrapper's block diagram and run-control state machine (draw.io) |
 
 ## What the wrapper does
 
 Both cores are preloaded with KWS build (c) (the program compiled for RV32I + Zmmul + the custom DOT4.S8 / CLIP.S8 instructions; see [`../kws/README.md`](../kws/README.md#the-three-builds-a-b-and-c)) and one recording, so the logic depends on real data and Vivado cannot optimise it away. After reset the core runs the model once:
+
+![The wrapper: clock, reset, core, LEDs](docs/fpga_wrapper.drawio.svg)
 
 | Output | Pin | Meaning |
 |---|---|---|
@@ -24,6 +27,8 @@ Both cores are preloaded with KWS build (c) (the program compiled for RV32I + Zm
 | `btn0` (BTN0) | D19 | reset; press it to run again |
 
 Four LEDs can show 0–11 but not "done" as well, so done uses an RGB LED. The wrapper sees the label through the core's `dbg_mem_*` outputs, which describe each store. Once the core is done, the wrapper holds it in reset, so it runs exactly once per button press.
+
+![Run control: RESET, RUN, DONE, ERROR](docs/fpga_run_fsm.drawio.svg)
 
 ## Running Vivado
 

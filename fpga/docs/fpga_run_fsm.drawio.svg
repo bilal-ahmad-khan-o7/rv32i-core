@@ -1,0 +1,225 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="430" viewBox="0 0 1040 430" content="&lt;mxfile host=&quot;drawio&quot; type=&quot;device&quot;&gt;&lt;diagram id=&quot;fpga_run_fsm&quot; name=&quot;fpga_run_fsm&quot;&gt;&lt;mxGraphModel dx=&quot;1040&quot; dy=&quot;430&quot; grid=&quot;1&quot; gridSize=&quot;10&quot; guides=&quot;1&quot; tooltips=&quot;1&quot; connect=&quot;1&quot; arrows=&quot;1&quot; fold=&quot;1&quot; page=&quot;1&quot; pageScale=&quot;1&quot; pageWidth=&quot;1040&quot; pageHeight=&quot;430&quot; background=&quot;#FFFFFF&quot; math=&quot;0&quot; shadow=&quot;0&quot;&gt;&lt;root&gt;&lt;mxCell id=&quot;0&quot;/&gt;&lt;mxCell id=&quot;1&quot; parent=&quot;0&quot;/&gt;&lt;mxCell id=&quot;c3&quot; value=&quot;&amp;lt;b&amp;gt;&amp;lt;font style=&amp;quot;font-size:13px&amp;quot;&amp;gt;RESET&amp;lt;/font&amp;gt;&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;&amp;lt;font style=&amp;quot;font-size:11px&amp;quot;&amp;gt;core in reset&amp;lt;/font&amp;gt;&amp;lt;br&amp;gt;&amp;lt;font style=&amp;quot;font-size:11px&amp;quot;&amp;gt;done = error = 0, label = 0&amp;lt;/font&amp;gt;&quot; style=&quot;rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#B8860B;strokeWidth=1.8;fontFamily=Helvetica;fontColor=#1F2A37;fontSize=11;align=center;verticalAlign=middle;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry x=&quot;40.0&quot; y=&quot;160.0&quot; width=&quot;210.0&quot; height=&quot;90.0&quot; as=&quot;geometry&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c4&quot; value=&quot;&amp;lt;b&amp;gt;&amp;lt;font style=&amp;quot;font-size:13px&amp;quot;&amp;gt;RUN&amp;lt;/font&amp;gt;&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;&amp;lt;font style=&amp;quot;font-size:11px&amp;quot;&amp;gt;the core runs the KWS program;&amp;lt;/font&amp;gt;&amp;lt;br&amp;gt;&amp;lt;font style=&amp;quot;font-size:11px&amp;quot;&amp;gt;a store to kws_label sets label&amp;lt;/font&amp;gt;&quot; style=&quot;rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#DCE6F2;strokeColor=#1F3A5F;strokeWidth=1.8;fontFamily=Helvetica;fontColor=#1F2A37;fontSize=11;align=center;verticalAlign=middle;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry x=&quot;390.0&quot; y=&quot;160.0&quot; width=&quot;230.0&quot; height=&quot;90.0&quot; as=&quot;geometry&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c5&quot; value=&quot;&amp;lt;b&amp;gt;&amp;lt;font style=&amp;quot;font-size:13px&amp;quot;&amp;gt;DONE&amp;lt;/font&amp;gt;&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;&amp;lt;font style=&amp;quot;font-size:11px&amp;quot;&amp;gt;green LED on, LEDs show label;&amp;lt;/font&amp;gt;&amp;lt;br&amp;gt;&amp;lt;font style=&amp;quot;font-size:11px&amp;quot;&amp;gt;core held in reset&amp;lt;/font&amp;gt;&quot; style=&quot;rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#E3F2E1;strokeColor=#2E7D32;strokeWidth=1.8;fontFamily=Helvetica;fontColor=#1F2A37;fontSize=11;align=center;verticalAlign=middle;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry x=&quot;790.0&quot; y=&quot;40.0&quot; width=&quot;210.0&quot; height=&quot;90.0&quot; as=&quot;geometry&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c6&quot; value=&quot;&amp;lt;b&amp;gt;&amp;lt;font style=&amp;quot;font-size:13px&amp;quot;&amp;gt;ERROR&amp;lt;/font&amp;gt;&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;&amp;lt;font style=&amp;quot;font-size:11px&amp;quot;&amp;gt;red LED on;&amp;lt;/font&amp;gt;&amp;lt;br&amp;gt;&amp;lt;font style=&amp;quot;font-size:11px&amp;quot;&amp;gt;core held in reset&amp;lt;/font&amp;gt;&quot; style=&quot;rounded=1;arcSize=11;whiteSpace=wrap;html=1;fillColor=#FBE3E1;strokeColor=#B03A2E;strokeWidth=1.8;fontFamily=Helvetica;fontColor=#1F2A37;fontSize=11;align=center;verticalAlign=middle;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry x=&quot;790.0&quot; y=&quot;290.0&quot; width=&quot;210.0&quot; height=&quot;90.0&quot; as=&quot;geometry&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c7&quot; value=&quot;&quot; style=&quot;html=1;rounded=0;endArrow=block;endFill=1;endSize=7;startArrow=none;startFill=1;startSize=7;strokeColor=#1F3A5F;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;&lt;mxPoint x=&quot;250&quot; y=&quot;205&quot; as=&quot;sourcePoint&quot;/&gt;&lt;mxPoint x=&quot;390&quot; y=&quot;205&quot; as=&quot;targetPoint&quot;/&gt;&lt;/mxGeometry&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c8&quot; value=&quot;button released and&quot; style=&quot;text;html=1;whiteSpace=nowrap;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=#1F2A37;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry x=&quot;259.5&quot; y=&quot;169.9&quot; width=&quot;121.0&quot; height=&quot;15.4&quot; as=&quot;geometry&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c9&quot; value=&quot;MMCM locked&quot; style=&quot;text;html=1;whiteSpace=nowrap;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=#1F2A37;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry x=&quot;283.7&quot; y=&quot;184.9&quot; width=&quot;72.6&quot; height=&quot;15.4&quot; as=&quot;geometry&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c10&quot; value=&quot;(released 2 clock&quot; style=&quot;text;html=1;whiteSpace=nowrap;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=10.5;fontColor=#5B6573;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry x=&quot;267.9&quot; y=&quot;216.3&quot; width=&quot;104.2&quot; height=&quot;14.7&quot; as=&quot;geometry&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c11&quot; value=&quot;edges later)&quot; style=&quot;text;html=1;whiteSpace=nowrap;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=10.5;fontColor=#5B6573;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry x=&quot;282.4&quot; y=&quot;230.3&quot; width=&quot;75.3&quot; height=&quot;14.7&quot; as=&quot;geometry&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c12&quot; value=&quot;&quot; style=&quot;html=1;rounded=0;endArrow=block;endFill=1;endSize=7;startArrow=none;startFill=1;startSize=7;strokeColor=#1F3A5F;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;&lt;mxPoint x=&quot;620&quot; y=&quot;185&quot; as=&quot;sourcePoint&quot;/&gt;&lt;mxPoint x=&quot;790&quot; y=&quot;85&quot; as=&quot;targetPoint&quot;/&gt;&lt;Array as=&quot;points&quot;&gt;&lt;mxPoint x=&quot;700&quot; y=&quot;185&quot;/&gt;&lt;mxPoint x=&quot;700&quot; y=&quot;85&quot;/&gt;&lt;/Array&gt;&lt;/mxGeometry&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c13&quot; value=&quot;ebreak&quot; style=&quot;text;html=1;whiteSpace=nowrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=#1F2A37;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry x=&quot;705.0&quot; y=&quot;129.9&quot; width=&quot;45.6&quot; height=&quot;15.4&quot; as=&quot;geometry&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c14&quot; value=&quot;(dbg_system)&quot; style=&quot;text;html=1;whiteSpace=nowrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=10.5;fontColor=#5B6573;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry x=&quot;705.0&quot; y=&quot;144.3&quot; width=&quot;75.3&quot; height=&quot;14.7&quot; as=&quot;geometry&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c15&quot; value=&quot;&quot; style=&quot;html=1;rounded=0;endArrow=block;endFill=1;endSize=7;startArrow=none;startFill=1;startSize=7;strokeColor=#1F3A5F;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;&lt;mxPoint x=&quot;620&quot; y=&quot;225&quot; as=&quot;sourcePoint&quot;/&gt;&lt;mxPoint x=&quot;790&quot; y=&quot;335&quot; as=&quot;targetPoint&quot;/&gt;&lt;Array as=&quot;points&quot;&gt;&lt;mxPoint x=&quot;700&quot; y=&quot;225&quot;/&gt;&lt;mxPoint x=&quot;700&quot; y=&quot;335&quot;/&gt;&lt;/Array&gt;&lt;/mxGeometry&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c16&quot; value=&quot;illegal word&quot; style=&quot;text;html=1;whiteSpace=nowrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=#1F2A37;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry x=&quot;705.0&quot; y=&quot;255.9&quot; width=&quot;85.2&quot; height=&quot;15.4&quot; as=&quot;geometry&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c17&quot; value=&quot;(dbg_illegal)&quot; style=&quot;text;html=1;whiteSpace=nowrap;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=10.5;fontColor=#5B6573;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry x=&quot;705.0&quot; y=&quot;270.3&quot; width=&quot;81.1&quot; height=&quot;14.7&quot; as=&quot;geometry&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c18&quot; value=&quot;&quot; style=&quot;html=1;rounded=0;endArrow=block;endFill=1;endSize=7;startArrow=none;startFill=1;startSize=7;strokeColor=#1F3A5F;strokeWidth=1.6;&quot; edge=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;&lt;mxPoint x=&quot;470&quot; y=&quot;250&quot; as=&quot;sourcePoint&quot;/&gt;&lt;mxPoint x=&quot;540&quot; y=&quot;250&quot; as=&quot;targetPoint&quot;/&gt;&lt;Array as=&quot;points&quot;&gt;&lt;mxPoint x=&quot;470&quot; y=&quot;290&quot;/&gt;&lt;mxPoint x=&quot;540&quot; y=&quot;290&quot;/&gt;&lt;/Array&gt;&lt;/mxGeometry&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c19&quot; value=&quot;no ebreak or illegal word yet&quot; style=&quot;text;html=1;whiteSpace=nowrap;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=#5B6573;fontStyle=0;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry x=&quot;414.3&quot; y=&quot;297.9&quot; width=&quot;181.5&quot; height=&quot;15.4&quot; as=&quot;geometry&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c20&quot; value=&quot;&quot; style=&quot;html=1;rounded=0;endArrow=block;endFill=1;endSize=7;startArrow=none;startFill=1;startSize=7;strokeColor=#C55A11;strokeWidth=1.6;dashed=1;dashPattern=6 4;&quot; edge=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;&lt;mxPoint x=&quot;895&quot; y=&quot;40&quot; as=&quot;sourcePoint&quot;/&gt;&lt;mxPoint x=&quot;145&quot; y=&quot;160&quot; as=&quot;targetPoint&quot;/&gt;&lt;Array as=&quot;points&quot;&gt;&lt;mxPoint x=&quot;895&quot; y=&quot;18&quot;/&gt;&lt;mxPoint x=&quot;145&quot; y=&quot;18&quot;/&gt;&lt;/Array&gt;&lt;/mxGeometry&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c21&quot; value=&quot;&quot; style=&quot;html=1;rounded=0;endArrow=block;endFill=1;endSize=7;startArrow=none;startFill=1;startSize=7;strokeColor=#C55A11;strokeWidth=1.6;dashed=1;dashPattern=6 4;&quot; edge=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;&lt;mxPoint x=&quot;895&quot; y=&quot;380&quot; as=&quot;sourcePoint&quot;/&gt;&lt;mxPoint x=&quot;145&quot; y=&quot;250&quot; as=&quot;targetPoint&quot;/&gt;&lt;Array as=&quot;points&quot;&gt;&lt;mxPoint x=&quot;895&quot; y=&quot;405&quot;/&gt;&lt;mxPoint x=&quot;145&quot; y=&quot;405&quot;/&gt;&lt;/Array&gt;&lt;/mxGeometry&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c22&quot; value=&quot;button pressed (or the MMCM loses lock): from any state&quot; style=&quot;text;html=1;whiteSpace=nowrap;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=#C55A11;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry x=&quot;335.5&quot; y=&quot;1.9&quot; width=&quot;369.0&quot; height=&quot;15.4&quot; as=&quot;geometry&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c23&quot; value=&quot;button pressed: run again (the memories keep their contents)&quot; style=&quot;text;html=1;whiteSpace=nowrap;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=#C55A11;fontStyle=1;spacing=0;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry x=&quot;319.0&quot; y=&quot;388.9&quot; width=&quot;402.0&quot; height=&quot;15.4&quot; as=&quot;geometry&quot;/&gt;&lt;/mxCell&gt;&lt;/root&gt;&lt;/mxGraphModel&gt;&lt;/diagram&gt;&lt;/mxfile&gt;"><rect x="0" y="0" width="1040" height="430" fill="#FFFFFF"/><rect x="40" y="160" width="210" height="90" rx="10" ry="10" fill="#FFF2CC" stroke="#B8860B" stroke-width="1.8"/>
+<text x="145.0" y="195.8" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1F2A37" text-anchor="middle">RESET</text>
+<text x="145.0" y="210.1" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1F2A37" text-anchor="middle">core in reset</text>
+<text x="145.0" y="223.8" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1F2A37" text-anchor="middle">done = error = 0, label = 0</text>
+<rect x="390" y="160" width="230" height="90" rx="10" ry="10" fill="#DCE6F2" stroke="#1F3A5F" stroke-width="1.8"/>
+<text x="505.0" y="195.8" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1F2A37" text-anchor="middle">RUN</text>
+<text x="505.0" y="210.1" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1F2A37" text-anchor="middle">the core runs the KWS program;</text>
+<text x="505.0" y="223.8" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1F2A37" text-anchor="middle">a store to kws_label sets label</text>
+<rect x="790" y="40" width="210" height="90" rx="10" ry="10" fill="#E3F2E1" stroke="#2E7D32" stroke-width="1.8"/>
+<text x="895.0" y="75.8" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1F2A37" text-anchor="middle">DONE</text>
+<text x="895.0" y="90.1" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1F2A37" text-anchor="middle">green LED on, LEDs show label;</text>
+<text x="895.0" y="103.8" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1F2A37" text-anchor="middle">core held in reset</text>
+<rect x="790" y="290" width="210" height="90" rx="10" ry="10" fill="#FBE3E1" stroke="#B03A2E" stroke-width="1.8"/>
+<text x="895.0" y="325.8" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1F2A37" text-anchor="middle">ERROR</text>
+<text x="895.0" y="340.1" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1F2A37" text-anchor="middle">red LED on;</text>
+<text x="895.0" y="353.9" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1F2A37" text-anchor="middle">core held in reset</text>
+<polyline points="250,205 383.0,205.0" fill="none" stroke="#1F3A5F" stroke-width="1.6" stroke-linejoin="miter"/>
+<polygon points="390.0,205.0 382.0,209.0 382.0,201.0" fill="#1F3A5F"/>
+<text x="320" y="180" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1F2A37" text-anchor="middle">button released and</text>
+<text x="320" y="195" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1F2A37" text-anchor="middle">MMCM locked</text>
+<text x="320" y="226" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#5B6573" text-anchor="middle">(released 2 clock</text>
+<text x="320" y="240" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#5B6573" text-anchor="middle">edges later)</text>
+<polyline points="620,185 700,185 700,85 783.0,85.0" fill="none" stroke="#1F3A5F" stroke-width="1.6" stroke-linejoin="miter"/>
+<polygon points="790.0,85.0 782.0,89.0 782.0,81.0" fill="#1F3A5F"/>
+<text x="708" y="140" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="bold" fill="#1F2A37" text-anchor="start">ebreak</text>
+<text x="708" y="154" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#5B6573" text-anchor="start">(dbg_system)</text>
+<polyline points="620,225 700,225 700,335 783.0,335.0" fill="none" stroke="#1F3A5F" stroke-width="1.6" stroke-linejoin="miter"/>
+<polygon points="790.0,335.0 782.0,339.0 782.0,331.0" fill="#1F3A5F"/>
+<text x="708" y="266" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="bold" fill="#1F2A37" text-anchor="start">illegal word</text>
+<text x="708" y="280" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#5B6573" text-anchor="start">(dbg_illegal)</text>
+<polyline points="470,250 470,290 540,290 540.0,257.0" fill="none" stroke="#1F3A5F" stroke-width="1.6" stroke-linejoin="miter"/>
+<polygon points="540.0,250.0 544.0,258.0 536.0,258.0" fill="#1F3A5F"/>
+<text x="505" y="308" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#5B6573" text-anchor="middle">no ebreak or illegal word yet</text>
+<line x1="895.0" y1="40.0" x2="895.0" y2="34.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="895.0" y1="30.0" x2="895.0" y2="24.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="895.0" y1="20.0" x2="895.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="895.0" y1="18.0" x2="891.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="887.0" y1="18.0" x2="881.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="877.0" y1="18.0" x2="871.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="867.0" y1="18.0" x2="861.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="857.0" y1="18.0" x2="851.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="847.0" y1="18.0" x2="841.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="837.0" y1="18.0" x2="831.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="827.0" y1="18.0" x2="821.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="817.0" y1="18.0" x2="811.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="807.0" y1="18.0" x2="801.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="797.0" y1="18.0" x2="791.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="787.0" y1="18.0" x2="781.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="777.0" y1="18.0" x2="771.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="767.0" y1="18.0" x2="761.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="757.0" y1="18.0" x2="751.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="747.0" y1="18.0" x2="741.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="737.0" y1="18.0" x2="731.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="727.0" y1="18.0" x2="721.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="717.0" y1="18.0" x2="711.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="707.0" y1="18.0" x2="701.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="697.0" y1="18.0" x2="691.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="687.0" y1="18.0" x2="681.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="677.0" y1="18.0" x2="671.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="667.0" y1="18.0" x2="661.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="657.0" y1="18.0" x2="651.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="647.0" y1="18.0" x2="641.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="637.0" y1="18.0" x2="631.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="627.0" y1="18.0" x2="621.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="617.0" y1="18.0" x2="611.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="607.0" y1="18.0" x2="601.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="597.0" y1="18.0" x2="591.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="587.0" y1="18.0" x2="581.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="577.0" y1="18.0" x2="571.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="567.0" y1="18.0" x2="561.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="557.0" y1="18.0" x2="551.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="547.0" y1="18.0" x2="541.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="537.0" y1="18.0" x2="531.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="527.0" y1="18.0" x2="521.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="517.0" y1="18.0" x2="511.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="507.0" y1="18.0" x2="501.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="497.0" y1="18.0" x2="491.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="487.0" y1="18.0" x2="481.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="477.0" y1="18.0" x2="471.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="467.0" y1="18.0" x2="461.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="457.0" y1="18.0" x2="451.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="447.0" y1="18.0" x2="441.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="437.0" y1="18.0" x2="431.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="427.0" y1="18.0" x2="421.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="417.0" y1="18.0" x2="411.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="407.0" y1="18.0" x2="401.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="397.0" y1="18.0" x2="391.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="387.0" y1="18.0" x2="381.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="377.0" y1="18.0" x2="371.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="367.0" y1="18.0" x2="361.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="357.0" y1="18.0" x2="351.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="347.0" y1="18.0" x2="341.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="337.0" y1="18.0" x2="331.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="327.0" y1="18.0" x2="321.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="317.0" y1="18.0" x2="311.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="307.0" y1="18.0" x2="301.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="297.0" y1="18.0" x2="291.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="287.0" y1="18.0" x2="281.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="277.0" y1="18.0" x2="271.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="267.0" y1="18.0" x2="261.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="257.0" y1="18.0" x2="251.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="247.0" y1="18.0" x2="241.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="237.0" y1="18.0" x2="231.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="227.0" y1="18.0" x2="221.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="217.0" y1="18.0" x2="211.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="207.0" y1="18.0" x2="201.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="197.0" y1="18.0" x2="191.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="187.0" y1="18.0" x2="181.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="177.0" y1="18.0" x2="171.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="167.0" y1="18.0" x2="161.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="157.0" y1="18.0" x2="151.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="147.0" y1="18.0" x2="145.0" y2="18.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="18.0" x2="145.0" y2="22.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="26.0" x2="145.0" y2="32.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="36.0" x2="145.0" y2="42.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="46.0" x2="145.0" y2="52.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="56.0" x2="145.0" y2="62.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="66.0" x2="145.0" y2="72.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="76.0" x2="145.0" y2="82.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="86.0" x2="145.0" y2="92.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="96.0" x2="145.0" y2="102.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="106.0" x2="145.0" y2="112.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="116.0" x2="145.0" y2="122.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="126.0" x2="145.0" y2="132.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="136.0" x2="145.0" y2="142.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="146.0" x2="145.0" y2="152.0" stroke="#C55A11" stroke-width="1.6"/>
+<polygon points="145.0,160.0 141.0,152.0 149.0,152.0" fill="#C55A11"/>
+<line x1="895.0" y1="380.0" x2="895.0" y2="386.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="895.0" y1="390.0" x2="895.0" y2="396.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="895.0" y1="400.0" x2="895.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="895.0" y1="405.0" x2="894.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="890.0" y1="405.0" x2="884.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="880.0" y1="405.0" x2="874.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="870.0" y1="405.0" x2="864.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="860.0" y1="405.0" x2="854.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="850.0" y1="405.0" x2="844.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="840.0" y1="405.0" x2="834.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="830.0" y1="405.0" x2="824.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="820.0" y1="405.0" x2="814.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="810.0" y1="405.0" x2="804.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="800.0" y1="405.0" x2="794.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="790.0" y1="405.0" x2="784.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="780.0" y1="405.0" x2="774.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="770.0" y1="405.0" x2="764.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="760.0" y1="405.0" x2="754.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="750.0" y1="405.0" x2="744.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="740.0" y1="405.0" x2="734.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="730.0" y1="405.0" x2="724.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="720.0" y1="405.0" x2="714.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="710.0" y1="405.0" x2="704.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="700.0" y1="405.0" x2="694.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="690.0" y1="405.0" x2="684.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="680.0" y1="405.0" x2="674.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="670.0" y1="405.0" x2="664.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="660.0" y1="405.0" x2="654.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="650.0" y1="405.0" x2="644.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="640.0" y1="405.0" x2="634.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="630.0" y1="405.0" x2="624.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="620.0" y1="405.0" x2="614.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="610.0" y1="405.0" x2="604.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="600.0" y1="405.0" x2="594.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="590.0" y1="405.0" x2="584.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="580.0" y1="405.0" x2="574.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="570.0" y1="405.0" x2="564.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="560.0" y1="405.0" x2="554.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="550.0" y1="405.0" x2="544.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="540.0" y1="405.0" x2="534.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="530.0" y1="405.0" x2="524.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="520.0" y1="405.0" x2="514.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="510.0" y1="405.0" x2="504.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="500.0" y1="405.0" x2="494.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="490.0" y1="405.0" x2="484.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="480.0" y1="405.0" x2="474.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="470.0" y1="405.0" x2="464.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="460.0" y1="405.0" x2="454.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="450.0" y1="405.0" x2="444.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="440.0" y1="405.0" x2="434.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="430.0" y1="405.0" x2="424.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="420.0" y1="405.0" x2="414.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="410.0" y1="405.0" x2="404.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="400.0" y1="405.0" x2="394.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="390.0" y1="405.0" x2="384.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="380.0" y1="405.0" x2="374.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="370.0" y1="405.0" x2="364.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="360.0" y1="405.0" x2="354.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="350.0" y1="405.0" x2="344.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="340.0" y1="405.0" x2="334.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="330.0" y1="405.0" x2="324.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="320.0" y1="405.0" x2="314.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="310.0" y1="405.0" x2="304.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="300.0" y1="405.0" x2="294.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="290.0" y1="405.0" x2="284.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="280.0" y1="405.0" x2="274.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="270.0" y1="405.0" x2="264.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="260.0" y1="405.0" x2="254.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="250.0" y1="405.0" x2="244.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="240.0" y1="405.0" x2="234.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="230.0" y1="405.0" x2="224.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="220.0" y1="405.0" x2="214.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="210.0" y1="405.0" x2="204.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="200.0" y1="405.0" x2="194.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="190.0" y1="405.0" x2="184.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="180.0" y1="405.0" x2="174.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="170.0" y1="405.0" x2="164.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="160.0" y1="405.0" x2="154.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="150.0" y1="405.0" x2="145.0" y2="405.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="405.0" x2="145.0" y2="404.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="400.0" x2="145.0" y2="394.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="390.0" x2="145.0" y2="384.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="380.0" x2="145.0" y2="374.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="370.0" x2="145.0" y2="364.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="360.0" x2="145.0" y2="354.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="350.0" x2="145.0" y2="344.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="340.0" x2="145.0" y2="334.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="330.0" x2="145.0" y2="324.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="320.0" x2="145.0" y2="314.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="310.0" x2="145.0" y2="304.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="300.0" x2="145.0" y2="294.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="290.0" x2="145.0" y2="284.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="280.0" x2="145.0" y2="274.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="270.0" x2="145.0" y2="264.0" stroke="#C55A11" stroke-width="1.6"/>
+<line x1="145.0" y1="260.0" x2="145.0" y2="257.0" stroke="#C55A11" stroke-width="1.6"/>
+<polygon points="145.0,250.0 149.0,258.0 141.0,258.0" fill="#C55A11"/>
+<text x="520" y="12" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="bold" fill="#C55A11" text-anchor="middle">button pressed (or the MMCM loses lock): from any state</text>
+<text x="520" y="399" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="bold" fill="#C55A11" text-anchor="middle">button pressed: run again (the memories keep their contents)</text></svg>

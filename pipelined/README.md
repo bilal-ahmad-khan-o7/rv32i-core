@@ -125,6 +125,8 @@ rs1 and rs2 are compared by field, whether or not the instruction reads them; se
 
 The debug outputs come from MEM/WB, so a testbench stops only when `ebreak`, `ecall` or an illegal word reaches WB, after every older instruction has finished. Fetch stops as soon as such an instruction is in ID: everything behind it becomes a bubble, so when the run stops no younger instruction has written a register or memory, exactly as on `rv32iss` and the single-cycle core. A wrong-path `ebreak` or illegal word is flushed by the redirect in the same cycle and stops nothing.
 
+![Fetch stop: the state machine in hazard_unit.sv](docs/diagrams/fetch_stop_fsm.drawio.svg)
+
 ### Debug outputs
 
 `dbg_pc`, `dbg_instr`, `dbg_illegal` and `dbg_system` describe the instruction in WB (bubbles have `dbg_system = dbg_illegal = 0`). `dbg_mem_we`, `dbg_mem_addr` and `dbg_mem_wdata` describe its store, if it made one; the FPGA wrapper uses them to show the KWS label.
