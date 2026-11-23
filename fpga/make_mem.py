@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 FPGA = Path(__file__).resolve().parent
-GEN = FPGA.parent / "single_cycle" / "kws" / "gen"
+GEN = FPGA.parent / "kws" / "gen"
 WORDS = 16384                                   # DMEM_WORDS of top_kws
 INPUT_WORD = (0x1000_F000 >> 2) & (WORDS - 1)   # the memory has no decoder: low address bits
 

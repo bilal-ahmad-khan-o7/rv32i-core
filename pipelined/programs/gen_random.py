@@ -204,7 +204,7 @@ def write_hex(path, words):
 
 # ---- expected results, from rv32iss --------------------------------------------------
 HERE = Path(__file__).resolve().parent
-ISS_SRC = HERE.parents[1] / "single_cycle" / "sim" / "iss" / "rv32iss.c"
+ISS_SRC = HERE.parents[1] / "iss" / "rv32iss.c"
 ISS = HERE.parent / "build" / ("rv32iss.exe" if os.name == "nt" else "rv32iss")
 
 

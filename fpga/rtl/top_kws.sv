@@ -23,7 +23,7 @@ module top_kws #(
   output logic       led4_g,
   output logic       led5_r
 );
-  localparam logic [31:0] LABEL_ADDR = 32'h1000_F20C;      // kws_label (single_cycle/kws/sw/link.ld)
+  localparam logic [31:0] LABEL_ADDR = 32'h1000_F20C;      // kws_label (kws/sw/link.ld)
 
   logic        clk, locked, rst, core_rst;
   logic [31:0] dbg_pc, dbg_instr, dbg_mem_addr, dbg_mem_wdata;

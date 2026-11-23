@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 // tb_core_kws.sv - runs a program on the PIPELINED core: the KWS programs from
-// single_cycle/kws/, and any other program (random, hazard tests). It is
+// kws/, and any other program (random, hazard tests). It is
 // single_cycle/tb/tb_core_kws.sv with its probes moved to where things now happen:
 //   marker      the marker store is seen in EX, the cycle it writes data memory: every
 //               older store has written by then and no younger one has

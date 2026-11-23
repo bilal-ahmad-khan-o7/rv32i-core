@@ -53,18 +53,18 @@ INCLUDES = {
 
 def hello_args(build):
     """Plusargs of one tb_core_kws run of the tiny bring-up program."""
-    return [f"+PROG=kws/gen/hello_{build}.imem.hex", f"+DATA=kws/gen/hello_{build}.dmem.hex",
-            "+LAYERS=kws/sw/hello_layers.hex", "+EXPECT=kws/sw/hello_expect.hex"]
+    return [f"+PROG=../kws/gen/hello_{build}.imem.hex", f"+DATA=../kws/gen/hello_{build}.dmem.hex",
+            "+LAYERS=../kws/sw/hello_layers.hex", "+EXPECT=../kws/sw/hello_expect.hex"]
 
 
 def kws_args(name):
     """Plusargs of one tb_core_kws run of the full model, build (c)."""
-    return ["+PROG=kws/gen/kws_c.imem.hex", "+DATA=kws/gen/kws_c.dmem.hex", f"+INPUT=kws/gen/input_{name}.hex",
-            "+LAYERS=kws/gen/layers.hex", f"+EXPECT=kws/gen/expect_{name}.hex"]
+    return ["+PROG=../kws/gen/kws_c.imem.hex", "+DATA=../kws/gen/kws_c.dmem.hex", f"+INPUT=../kws/gen/input_{name}.hex",
+            "+LAYERS=../kws/gen/layers.hex", f"+EXPECT=../kws/gen/expect_{name}.hex"]
 
 
 # Slow targets: left out of the default run, so name them to run them. They use the
-# committed images in kws/gen, so they need no RISC-V toolchain.
+# committed images in ../kws/gen, so they need no RISC-V toolchain.
 SLOW = {
     "kws":         BLOCKS + STAGES,
 }

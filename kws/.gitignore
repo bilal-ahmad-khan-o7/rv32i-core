@@ -1,0 +1,7 @@
+# the 988 EEMBC feature files that are not committed (see ref/inputs.py)
+inputs/eembc_all/
+# EEMBC's kws01 features have no open licence, so the 12 real recordings and the
+# files generated from them stay local (see "Inputs" in README.md)
+inputs/real/
+gen/input_tst_*.hex
+gen/expect_tst_*.hex

@@ -21,7 +21,7 @@
  *     reaches WB, 2 cycles after its EX.
  *   Markers are timed when the marker store is in EX, as tb_core_kws.sv does.
  *
- * Build:  gcc -O2 -o build/rv32iss.exe sim/iss/rv32iss.c
+ * Build:  gcc -O2 -std=gnu11 -o build/rv32iss iss/rv32iss.c
  * Usage:  rv32iss --imem prog.hex [--dmem data.hex] [options]
  *   --imem-words N   instruction memory size in 32-bit words (default 8192, power of 2)
  *   --dmem-words N   data memory size in 32-bit words (default 16384, power of 2)

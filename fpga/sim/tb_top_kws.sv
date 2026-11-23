@@ -5,7 +5,7 @@
 // stays finished (the wrapper then holds the core in reset).
 //   +EXPECT=n  the expected label (default 9: tst_000007_Yes_9 is "Yes")
 module tb_top_kws;
-  parameter IMEM_FILE = "../single_cycle/kws/gen/kws_c.imem.hex";
+  parameter IMEM_FILE = "../kws/gen/kws_c.imem.hex";
   parameter DMEM_FILE = "mem/kws_c_dmem_tst_000007_Yes_9.hex";
 
   logic       sysclk = 1'b0, btn0 = 1'b1;

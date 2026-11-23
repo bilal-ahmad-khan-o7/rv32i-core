@@ -20,7 +20,7 @@ The 5-stage pipelined version of the core in [`../single_cycle/`](../single_cycl
 | `results.md` | KWS cycles per layer for builds (a), (b), (c), generated |
 | `docs/diagrams/` | TikZ diagrams (`diagrams.pdf` = all of them) |
 
-The KWS software, its images and expected outputs, and `rv32iss` stay in `../single_cycle/` and are used from there.
+The KWS software, its images and expected outputs come from [`../kws/`](../kws/), and the instruction simulator `rv32iss` from [`../iss/`](../iss/).
 
 ## Running the tests
 
@@ -173,7 +173,7 @@ The hazard and random programs stop after 100,000 cycles (they need a few thousa
 
 ### KWS, per layer
 
-The same three builds of the KWS program as on the single-cycle core ([details](../single_cycle/README.md#the-three-builds-a-b-and-c)):
+The same three builds of the KWS program as on the single-cycle core ([details](../kws/README.md#the-three-builds-a-b-and-c)):
 
 - **(a)** RV32I only: every multiply is a call to libgcc's software `__mulsi3`;
 - **(b)** RV32I + Zmmul: hardware `mul`, one multiply-accumulate per instruction;

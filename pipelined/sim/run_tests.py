@@ -8,7 +8,8 @@
 
 Runs from this folder (pipelined/), whatever the current directory is. The blocks the
 pipelined core reuses unchanged, and their unit testbenches, come from ../single_cycle/;
-so do the KWS images and rv32iss. Needs iverilog and vvp (Icarus 12+) on PATH. random_slow also needs a host gcc, to build rv32iss.
+the KWS images from ../kws/ and rv32iss from ../iss/. Needs iverilog and vvp (Icarus 12+)
+on PATH. random_slow also needs a host gcc, to build rv32iss.
 Exit code is 0 only if every testbench passes.
 """
 import os
@@ -69,7 +70,7 @@ SLOW = {
     "random_slow": (TB / "tb_core_kws.sv",       CORE),
 }
 
-KWS = "../single_cycle/kws"
+KWS = "../kws"
 
 
 def hello_args(build):

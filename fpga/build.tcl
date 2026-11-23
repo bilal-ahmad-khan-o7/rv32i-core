@@ -54,7 +54,7 @@ foreach m {clock_gen reset_sync top_kws} {
 }
 
 # KWS build (c) and one recording, so that nothing is optimised away
-set imem [file join $repo single_cycle kws gen kws_c.imem.hex]
+set imem [file join $repo kws gen kws_c.imem.hex]
 set dmem [file join $fpga mem kws_c_dmem_tst_000007_Yes_9.hex]
 foreach f [concat $files [list $imem $dmem [file join $fpga pynq_z2.xdc]]] {
     if {![file exists $f]} {

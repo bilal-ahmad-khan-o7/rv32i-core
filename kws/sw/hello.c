@@ -2,7 +2,7 @@
  * multiply, divide, the custom instructions and the marker all work on the core.
  * It writes 12 result bytes to kws_output, then a last marker.
  *
- * All three builds must give the same bytes: `python sim/run_tests.py kws` compares
+ * All three builds must give the same bytes: `python3 single_cycle/sim/run_tests.py kws` compares
  * them with hello_expect.hex at marker 3 (table: hello_layers.hex). */
 #include <stdint.h>
 #include "nn_insn.h"

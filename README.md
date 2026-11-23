@@ -51,10 +51,13 @@ Both use the custom-0 opcode (`0001011`), R format, funct7 = `0000000`.
 
 | Folder | Contents |
 |---|---|
-| [`single_cycle/`](single_cycle/) | the single-cycle core and its testbenches, the KWS C code and Python reference, the instruction simulator `rv32iss` |
-| [`pipelined/`](pipelined/) | the 5-stage pipeline; reuses the unchanged modules and KWS files from `single_cycle/` |
-| [`riscof/`](riscof/) | the RISCOF setup: DUT and Spike plugins, testbench, run script |
+| [`single_cycle/`](single_cycle/) | the single-cycle core, its unit and whole-core testbenches |
+| [`pipelined/`](pipelined/) | the 5-stage pipeline: reuses the single-cycle stage modules, adds pipeline registers, forwarding and hazard units |
+| [`kws/`](kws/) | the keyword-spotting workload: bare-metal C, the Python/TFLite reference, generated images, results |
+| [`iss/`](iss/) | `rv32iss`, the instruction-set simulator used as the golden model for both cores |
+| [`riscof/`](riscof/) | the official RISC-V architectural tests: DUT and Spike plugins, testbench, run script |
 | [`fpga/`](fpga/) | Vivado scripts and the PYNQ-Z2 wrapper for both cores |
+| [`docs/`](docs/) | the overview diagrams (draw.io) |
 
 Each folder's README covers its design, tests and results in detail.
 
@@ -82,4 +85,4 @@ Icarus Verilog, GTKWave, RISC-V GCC, Spike, RISCOF, Vivado, Python (NumPy, TFLit
 
 ## Licence
 
-MIT; see [LICENSE](LICENSE). The KWS model, `single_cycle/kws/model/kws_ref_model.tflite`, is the MLPerf Tiny reference model from [mlcommons/tiny](https://github.com/mlcommons/tiny), under the Apache License 2.0. The EEMBC test recordings are not included; [`single_cycle/README.md`](single_cycle/README.md#inputs) explains how to fetch them.
+MIT; see [LICENSE](LICENSE). The KWS model, `kws/model/kws_ref_model.tflite`, is the MLPerf Tiny reference model from [mlcommons/tiny](https://github.com/mlcommons/tiny), under the Apache License 2.0. The EEMBC test recordings are not included; [`kws/README.md`](kws/README.md#inputs) explains how to fetch them.
