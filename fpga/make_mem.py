@@ -1,7 +1,7 @@
 """Write the data-memory image for the FPGA build: KWS build (c)'s data image with one
 recording's 490 input bytes merged in at kws_input (0x1000_F000).
 
-    python fpga/make_mem.py [recording]      # default tst_000007_Yes_9 ("Yes")
+    python3 fpga/make_mem.py [recording]      # default tst_000007_Yes_9 ("Yes")
 
 writes fpga/mem/kws_c_dmem_<recording>.hex: 16384 words (64 KiB), one per line. In
 simulation the input is loaded separately (+INPUT); the FPGA has only its preload.

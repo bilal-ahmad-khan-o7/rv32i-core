@@ -1,6 +1,6 @@
 """Random but valid programs, for comparing the pipelined core with rv32iss.
 
-    python programs/gen_random.py SEED OUT [--padded] [-n N] [--expect]
+    python3 programs/gen_random.py SEED OUT [--padded] [-n N] [--expect]
 
 writes OUT.imem.hex (the program) and OUT.data.hex (a 256-byte data window, loaded at
 0x1000_F000 with +INPUT / --load); --expect also runs rv32iss and writes OUT.trace and
@@ -21,6 +21,7 @@ The encoder below covers only what these programs use. It checks itself against
 words from GNU as when it is imported.
 """
 import argparse
+import os
 import random
 import shutil
 import subprocess
@@ -204,7 +205,7 @@ def write_hex(path, words):
 # ---- expected results, from rv32iss --------------------------------------------------
 HERE = Path(__file__).resolve().parent
 ISS_SRC = HERE.parents[1] / "single_cycle" / "sim" / "iss" / "rv32iss.c"
-ISS = HERE.parent / "build" / "rv32iss.exe"
+ISS = HERE.parent / "build" / ("rv32iss.exe" if os.name == "nt" else "rv32iss")
 
 
 def build_iss():

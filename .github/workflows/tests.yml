@@ -1,0 +1,20 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  regression:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Icarus Verilog
+        run: sudo apt-get update && sudo apt-get install -y iverilog
+
+      - name: Single-cycle core (13 testbenches)
+        run: python3 single_cycle/sim/run_tests.py
+
+      - name: Pipelined core (18 testbenches)
+        run: python3 pipelined/sim/run_tests.py

@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
-// tb_pc_reg.sv - PC register: reset wins over next_pc, otherwise load every edge
-// (PDF Lesson 4.5.1). Drive on the falling edge, check just after the rising edge.
+// tb_pc_reg.sv - PC register: reset wins over next_pc, otherwise load every edge.
+// Drive on the falling edge, check just after the rising edge.
 module tb_pc_reg;
   logic        clk = 1'b0;
   logic        rst;

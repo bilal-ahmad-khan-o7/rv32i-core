@@ -1,6 +1,6 @@
 """Generate everything the KWS programs and tests need from the .tflite model.
 
-    python kws/ref/gen_kws.py
+    python3 kws/ref/gen_kws.py
 
 Writes, in kws/gen (all committed, like programs/dot64.*):
   kws_tables.h, kws_tables.c   weights, folded biases and requantisation tables

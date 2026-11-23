@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-// branch_unit.sv - branch condition (PDF Lesson 10.3, Listing 10.3).
+// branch_unit.sv - branch condition.
 // Compares rs1/rs2 on every instruction; take_branch only means something
 // when the control unit's `branch` is 1.
 module branch_unit (

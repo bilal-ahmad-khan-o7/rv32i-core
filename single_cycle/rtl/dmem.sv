@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 // dmem.sv - data memory: word array, combinational read, clocked write with a
-// 4-bit byte write mask (PDF Lesson 5.4.3, Listing 5.1).
+// 4-bit byte write mask.
 // Lane shifting and mask generation happen outside, in lsu.sv.
 // Zero-filled, then optionally preloaded from INIT_FILE (one 32-bit hex word
 // per line, like imem) - e.g. NN weights and inputs. The path is relative to

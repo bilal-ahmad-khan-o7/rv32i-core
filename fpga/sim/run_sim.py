@@ -1,7 +1,7 @@
 """Simulate the FPGA wrapper with Icarus, for one core or both, before running Vivado.
 
-    python fpga/sim/run_sim.py                 # both cores
-    python fpga/sim/run_sim.py pipelined       # or: single_cycle
+    python3 fpga/sim/run_sim.py                 # both cores
+    python3 fpga/sim/run_sim.py pipelined       # or: single_cycle
 
 Uses the same source lists as build.tcl, plus xilinx_stubs.sv for the MMCM and the clock
 buffer. Each run takes a few minutes (about 3.5 million core cycles).
@@ -28,7 +28,7 @@ WRAPPER = ["rtl/clock_gen.sv", "rtl/reset_sync.sv", "rtl/top_kws.sv", "sim/xilin
 
 
 def tool(name):
-    return shutil.which(name) or str(Path(r"C:\iverilog\bin") / f"{name}.exe")
+    return shutil.which(name) or sys.exit(f"error: {name} not found on PATH (install Icarus Verilog 12+)")
 
 
 def main():

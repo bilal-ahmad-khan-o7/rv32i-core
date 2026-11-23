@@ -1,11 +1,13 @@
 """Build the bare-metal programs in kws/sw and write their memory images to kws/gen.
 
-    python kws/build.py              # every program, builds a, b and c
-    python kws/build.py kws c        # one program, one build
+    python3 kws/build.py              # every program, builds a, b and c
+    python3 kws/build.py kws c        # one program, one build
 
-Needs the RISC-V GNU toolchain: the xPack riscv-none-elf-gcc in C:\\xpack, or set
-RISCV_TOOLS to its bin folder. Only rebuilding needs it: the images are committed,
-so running the tests does not.
+Needs a RISC-V GNU toolchain with rv32i/ilp32 libraries: riscv-none-elf-gcc (xPack),
+riscv64-unknown-elf-gcc or riscv32-unknown-elf-gcc, the first one found on PATH.
+RISCV_PREFIX picks one (e.g. RISCV_PREFIX=/opt/riscv/bin/riscv64-unknown-elf-).
+Only rebuilding needs it: the images are committed, so running the tests does not.
+A different GCC version may produce different (equally valid) images and cycle counts.
 
 Builds (one C source, three instruction sets):
     a   RV32I; multiply and divide in software (libgcc)
@@ -13,6 +15,7 @@ Builds (one C source, three instruction sets):
     c   RV32I + Zmmul + DOT4.S8 and CLIP.S8
 """
 import os
+import shutil
 import struct
 import subprocess
 import sys
@@ -22,9 +25,22 @@ ROOT = Path(__file__).resolve().parent.parent
 SW = ROOT / "kws" / "sw"
 GEN = ROOT / "kws" / "gen"
 OBJ = ROOT / "build" / "kws"
-TOOLS = Path(os.environ.get("RISCV_TOOLS", r"C:\xpack\xpack-riscv-none-elf-gcc-15.2.0-1\bin"))
-CC = TOOLS / "riscv-none-elf-gcc.exe"
-OBJDUMP = TOOLS / "riscv-none-elf-objdump.exe"
+
+
+def toolchain_prefix():
+    """RISCV_PREFIX if set, else the first RISC-V GCC found on PATH."""
+    if "RISCV_PREFIX" in os.environ:
+        return os.environ["RISCV_PREFIX"]
+    for prefix in ("riscv-none-elf-", "riscv64-unknown-elf-", "riscv32-unknown-elf-"):
+        if shutil.which(prefix + "gcc"):
+            return prefix
+    sys.exit("no RISC-V GCC on PATH (riscv-none-elf-gcc, riscv64-unknown-elf-gcc, ...); "
+             "install one or set RISCV_PREFIX")
+
+
+PREFIX = toolchain_prefix()
+CC = shutil.which(PREFIX + "gcc") or sys.exit(f"toolchain not found: {PREFIX}gcc (set RISCV_PREFIX)")
+OBJDUMP = shutil.which(PREFIX + "objdump") or sys.exit(f"toolchain not found: {PREFIX}objdump")
 
 BUILDS = {
     "a": ["-march=rv32i"],
@@ -118,8 +134,6 @@ def build(prog, b):
 def main():
     OBJ.mkdir(parents=True, exist_ok=True)
     GEN.mkdir(parents=True, exist_ok=True)
-    if not CC.exists():
-        sys.exit(f"toolchain not found: {CC} (set RISCV_TOOLS)")
     args = sys.argv[1:]
     progs = [a for a in args if a in PROGRAMS] or list(PROGRAMS)
     builds = [a for a in args if a in BUILDS] or list(BUILDS)

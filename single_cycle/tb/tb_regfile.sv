@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-// tb_regfile.sv - register file against a shadow model (PDF Lesson 5.5).
+// tb_regfile.sv - register file against a shadow model.
 // The model follows the ISA rules: writes to x0 and writes with we=0 are ignored.
 // All three read ports are checked on every read (rs3 = DOT4.S8's accumulator).
 module tb_regfile;
@@ -51,7 +51,7 @@ module tb_regfile;
     check_read(5'd7, 5'd6, 5'd7);
     check_read(5'd6, 5'd6, 5'd6);            // all three ports on one register
 
-    // Same-cycle read and write (Lesson 5.4.6): old value before the edge, new after.
+    // Same-cycle read and write: old value before the edge, new after.
     write_reg(5'd9, 32'h0000_0011, 1'b1);
     @(negedge clk) begin we = 1'b1; rd_addr = 5'd9; rd_data = 32'h0000_0055; rs1_addr = 5'd9; end
     #1;

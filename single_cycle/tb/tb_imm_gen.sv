@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
-// tb_imm_gen.sv - immediate generator against real encoded instructions
-// (PDF Lesson 7.3.1). The expected immediates are the ones written in the
+// tb_imm_gen.sv - immediate generator against real encoded instructions.
+// The expected immediates are the ones written in the
 // assembly, NOT recomputed with the same bit expressions as the design.
 module tb_imm_gen;
   import riscv_pkg::*;
@@ -21,14 +21,13 @@ module tb_imm_gen;
   endtask
 
   initial begin
-    // Listing 7.4
     check(32'h0050_0093, IMM_I, 32'd5,         "addi x1, x0, 5");
     check(32'h8000_0093, IMM_I, 32'hFFFF_F800, "addi x1, x0, -2048");
     check(32'hfe20_af23, IMM_S, 32'hFFFF_FFFE, "sw x2, -2(x1)");
     check(32'hfe20_8ee3, IMM_B, 32'hFFFF_FFFC, "beq x1, x2, -4");
     check(32'hffff_f0b7, IMM_U, 32'hFFFF_F000, "lui x1, 0xFFFFF");
     check(32'hff9f_f06f, IMM_J, 32'hFFFF_FFF8, "jal x0, -8");
-    // Lesson 7.3 example and exercise 7.6.3
+    // worked examples
     check(32'hFE20_8CE3, IMM_B, 32'hFFFF_FFF8, "beq x1, x2, -8");
     check(32'h7E53_84E3, IMM_B, 32'h0000_0FE8, "branch, instr[31]=0");
     // range limits of every format, positive and negative

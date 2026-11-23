@@ -1,8 +1,8 @@
 `timescale 1ns/1ps
 // ex_stage.sv - Execute.
 // Operand muxes, ALU, branch condition, and the redirect decision.
-// Three adders work in parallel: the ALU, pc+imm here, and pc+4 in if_stage
-// (Lesson 8.4 trade-off). jalr reuses the ALU's rs1+imm for its target.
+// Three adders work in parallel: the ALU, pc+imm here, and pc+4 in if_stage.
+// jalr reuses the ALU's rs1+imm for its target.
 //
 // Extension units sit beside the ALU and see the same register operands;
 // ex_sel picks which result becomes ex_result (the value written to rd).

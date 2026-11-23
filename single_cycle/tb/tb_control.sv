@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-// tb_control.sv - control unit, directed (PDF Lesson 9.5 and exercise 9.9.3).
+// tb_control.sv - control unit, directed.
 // Part 1: one check per row of Table 9.2. An expected value of x means
 //         "does not matter" (the table's dash) and is not compared.
 //         reg_write and mem_write are NEVER don't-cares.

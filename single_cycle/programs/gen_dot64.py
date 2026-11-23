@@ -1,6 +1,6 @@
 """Generate the dot64 whole-core test for tb_core_dot64.
 
-    python programs/gen_dot64.py
+    python3 programs/gen_dot64.py
 
 Writes, next to this script:
   dot64.s           annotated listing: [address] machine word, instruction, effect

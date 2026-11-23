@@ -27,22 +27,22 @@ The KWS software, its images and expected outputs, and `rv32iss` stay in `../sin
 Requires Icarus Verilog 12+ and Python 3. Run from this folder:
 
 ```bash
-python sim/run_tests.py
+python3 sim/run_tests.py
 ```
 
 ```bash
-python sim/run_tests.py kws
+python3 sim/run_tests.py kws
 ```
 
 ```bash
-python sim/run_tests.py random_slow
+python3 sim/run_tests.py random_slow
 ```
 
 - **The fast suite** (18 testbenches, a few seconds) runs the unit testbenches of the reused blocks from `../single_cycle/tb/`, the adapted memory testbenches, the new units' testbenches, `tb_core` (smoke), `tb_core_dot64`, the hazard programs and the 8 committed random programs.
 - **`kws`** (slow, about 20 minutes) runs `hello` on all three builds, then the whole model, build (c), on `tst_000012_Go_1` and `syn_random`, checking every layer.
 - **`random_slow`** generates 300 new random programs (half padded, half hazard-dense), runs each on `rv32iss` and on the RTL, and compares the register traces and final data windows. It needs a host `gcc` to build `rv32iss`.
 
-`python sim/run_tests.py -v core` prints the full simulator output.
+`python3 sim/run_tests.py -v core` prints the full simulator output.
 
 ## Where each RTL file comes from
 
@@ -144,11 +144,11 @@ Beyond the suites, for this step:
 
 - **Full traces.** KWS builds (b) and (c) on `tst_000007_Yes_9` write exactly `rv32iss`'s register trace: 11,375,874 and 3,165,880 register writes.
 - **300 more random programs.** `random_slow` (seeds 1000–1299, half padded, half hazard-dense): every register trace and final data window equals `rv32iss`'s.
-- **All 19 inputs.** Build (c) is bit-exact at every layer on all 19 inputs in the RTL, and its cycles, instructions, load-use and flush cycles equal the cycle model at every marker (`python kws/run_all.py rtl --core pipelined`, in `../single_cycle/`). So do build (b) on one recording and build (a) up to the end of its first conv.
+- **All 19 inputs.** Build (c) is bit-exact at every layer on all 19 inputs in the RTL, and its cycles, instructions, load-use and flush cycles equal the cycle model at every marker (`python3 kws/run_all.py rtl --core pipelined`, in `../single_cycle/`). So do build (b) on one recording and build (a) up to the end of its first conv.
 
 ### The tests have been shown to fail
 
-Each bug below was planted in a private copy of the repository and the fast suite (18 testbenches) was run there. Every one is caught by the hazard and the random programs, and most also by a unit testbench or a core test.
+Each bug below was planted in a scratch copy of the repository and the fast suite (18 testbenches) was run there. Every one is caught by the hazard and the random programs, and most also by a unit testbench or a core test.
 
 | Planted bug | Passed | Failing | First difference reported |
 |---|---:|---|---|
@@ -170,6 +170,12 @@ The hazard and random programs stop after 100,000 cycles (they need a few thousa
 `rv32iss --pipeline` counts cycles for this core, without changing what it executes: each instruction is in EX one cycle after the one before, plus one cycle for a load-use stall and two after each taken branch, `jal` or `jalr`. The first instruction is in EX in cycle 2, and the run ends when `ebreak` reaches WB, so cycles = instructions + load-use + 2 × redirects + 3. It splits the cycles at each marker exactly as `tb_core_kws` does, by what is in EX: an instruction, a load-use bubble, a flush bubble, or other (the fill). On every program tried (smoke, dot64, the hazard and random programs, KWS (b) and (c) in full, (a)'s first conv) it equals the RTL exactly, marker by marker. Build (a) as a whole is therefore given as simulator-measured.
 
 ### KWS, per layer
+
+The same three builds of the KWS program as on the single-cycle core ([details](../single_cycle/README.md#the-three-builds-a-b-and-c)):
+
+- **(a)** RV32I only: every multiply is a call to libgcc's software `__mulsi3`;
+- **(b)** RV32I + Zmmul: hardware `mul`, one multiply-accumulate per instruction;
+- **(c)** RV32I + Zmmul + DOT4.S8 and CLIP.S8: four multiply-accumulates per instruction.
 
 Means over the 12 real recordings; `results.md` holds the generated version. Build (c):
 

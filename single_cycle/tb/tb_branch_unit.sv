@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
-// tb_branch_unit.sv - the six branch conditions, signed vs unsigned edges
-// (PDF Lesson 10.3), plus random operands against a model.
+// tb_branch_unit.sv - the six branch conditions, signed vs unsigned edges,
+// plus random operands against a model.
 module tb_branch_unit;
   logic [31:0] rs1_data, rs2_data;
   logic [2:0]  funct3;

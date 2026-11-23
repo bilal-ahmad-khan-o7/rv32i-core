@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-// pc_reg.sv - the program counter register (PDF Lesson 4.5, Listing 4.2).
+// pc_reg.sv - the program counter register.
 // Only stores. The next-PC choice lives outside (if_stage), so the pipeline can
 // later add an enable here without touching anything else.
 module pc_reg #(

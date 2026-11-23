@@ -9,12 +9,12 @@ These scripts synthesise, place and route either core for the PYNQ-Z2 (Zynq-7020
 | `rtl/top_kws.sv` | the wrapper: one core, the clock, the reset button, the LEDs |
 | `rtl/clock_gen.sv` | MMCM: 125 MHz board clock to the core clock (100 MHz; `CLK_DIVIDE` changes it) |
 | `rtl/reset_sync.sv` | button and MMCM lock to a reset synchronous to the core clock |
-| `make_mem.py`, `mem/` | the data-memory preload: KWS build (c) with recording `tst_000007_Yes_9` ("Yes") merged in. Not committed (the recording has no open licence): run `python fpga/make_mem.py` after recreating the recordings (see `single_cycle/README.md`, "Inputs") |
+| `make_mem.py`, `mem/` | the data-memory preload: KWS build (c) with recording `tst_000007_Yes_9` ("Yes") merged in. Not committed (the recording has no open licence): run `python3 fpga/make_mem.py` after recreating the recordings (see `single_cycle/README.md`, "Inputs") |
 | `sim/` | an Icarus test of the wrapper (`run_sim.py`), with stand-ins for the two Xilinx primitives |
 
 ## What the wrapper does
 
-Both cores are preloaded with KWS build (c) and one recording, so the logic depends on real data and Vivado cannot optimise it away. After reset the core runs the model once:
+Both cores are preloaded with KWS build (c) (the program compiled for RV32I + Zmmul + the custom DOT4.S8 / CLIP.S8 instructions; see [`../single_cycle/README.md`](../single_cycle/README.md#the-three-builds-a-b-and-c)) and one recording, so the logic depends on real data and Vivado cannot optimise it away. After reset the core runs the model once:
 
 | Output | Pin | Meaning |
 |---|---|---|
@@ -117,7 +117,7 @@ Not set yet: `build.tcl` still builds at 100 MHz.
 ## Testing the wrapper without Vivado
 
 ```bash
-python fpga/sim/run_sim.py
+python3 fpga/sim/run_sim.py
 ```
 
-This runs `top_kws` in Icarus for each core, exactly as on the board: preloaded memories, reset from the button, answer on the LEDs. `xilinx_stubs.sv` stands in for `MMCME2_BASE` and `BUFG` in simulation only; `build.tcl` never reads it. Both cores finish with label 9 and no error. To preload another recording, run `python fpga/make_mem.py <recording>` and change `DMEM_FILE` in `build.tcl` and `sim/tb_top_kws.sv`.
+This runs `top_kws` in Icarus for each core, exactly as on the board: preloaded memories, reset from the button, answer on the LEDs. `xilinx_stubs.sv` stands in for `MMCME2_BASE` and `BUFG` in simulation only; `build.tcl` never reads it. Both cores finish with label 9 and no error. To preload another recording, run `python3 fpga/make_mem.py <recording>` and change `DMEM_FILE` in `build.tcl` and `sim/tb_top_kws.sv`.

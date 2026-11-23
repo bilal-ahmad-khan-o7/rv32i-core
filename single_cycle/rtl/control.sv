@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-// control.sv - main control unit (PDF Lesson 9, Table 9.2, Listings 9.1-9.2).
+// control.sv - main control unit.
 // Purely combinational: opcode (+ funct3, funct7) -> every select and
 // enable in the datapath. Both decode levels (main + ALU control) live here.
 //
@@ -78,7 +78,7 @@ module control
   assign dot4_ok      = f7_base & (funct3 == F3_DOT4_S8);
   assign clip_ok      = f7_base & (funct3 == F3_CLIP_S8) & (rs2_addr == 5'd0);
 
-  // ---- ALU operation for OP-IMM and OP instructions (Listing 9.1) ---------
+  // ---- ALU operation for OP-IMM and OP instructions ---------
   logic [3:0] arith_op;
   always_comb begin
     case (funct3)
@@ -93,9 +93,9 @@ module control
     endcase
   end
 
-  // ---- Main decode (Listing 9.2) ------------------------------------------
+  // ---- Main decode ------------------------------------------
   always_comb begin
-    // ---- safe defaults: do nothing ----
+    // ---- safe defaults: do nothing --------------------------
     reg_write     = 1'b0;  alu_src_a_pc = 1'b0;  alu_src_b_imm = 1'b0;
     alu_op        = ALU_ADD;  ex_sel    = EX_ALU;  imm_sel      = IMM_I;
     mem_read      = 1'b0;  rs3_read     = 1'b0;

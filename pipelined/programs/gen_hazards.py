@@ -1,6 +1,6 @@
 """Directed hazard tests for the pipelined core.
 
-    python programs/gen_hazards.py        # writes programs/hazards/*
+    python3 programs/gen_hazards.py        # writes programs/hazards/*
 
 hazards.*   one program, one small case per marker. For each case, hazards.cases holds
             the load-use stall cycles and redirects the pipeline must spend on it; the

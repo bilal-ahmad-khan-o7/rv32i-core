@@ -1,13 +1,13 @@
 """Compile and run every testbench of the single-cycle core with Icarus Verilog.
 
-    python sim/run_tests.py              # all testbenches
-    python sim/run_tests.py alu core     # only tb_alu and tb_core
-    python sim/run_tests.py -v core      # also print the full simulator output
-    python sim/run_tests.py kws          # the slow KWS test (about 10 minutes), never run by default
+    python3 sim/run_tests.py              # all testbenches
+    python3 sim/run_tests.py alu core     # only tb_alu and tb_core
+    python3 sim/run_tests.py -v core      # also print the full simulator output
+    python3 sim/run_tests.py kws          # the slow KWS test (about 10 minutes), never run by default
 
 Runs from the project folder (whatever the current directory is), so the
 $readmemh / $dumpfile paths inside the testbenches ("programs/...", "build/...")
-resolve. Needs iverilog and vvp (Icarus 12+) on PATH, or in C:\\iverilog\\bin.
+resolve. Needs iverilog and vvp (Icarus 12+) on PATH.
 Exit code is 0 only if every testbench prints "PASS:".
 """
 import os
@@ -79,13 +79,7 @@ RUNS = {
 
 
 def find_tool(name):
-    path = shutil.which(name)
-    if path:
-        return path
-    fallback = Path(r"C:\iverilog\bin") / (name + ".exe")
-    if fallback.exists():
-        return str(fallback)
-    sys.exit(f"error: {name} not found on PATH (install Icarus Verilog 12+)")
+    return shutil.which(name) or sys.exit(f"error: {name} not found on PATH (install Icarus Verilog 12+)")
 
 
 def run(name, iverilog, vvp, verbose):

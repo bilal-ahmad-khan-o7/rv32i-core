@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-// alu.sv - arithmetic and logic unit (PDF Lesson 7.2, Listing 7.1).
+// alu.sv - arithmetic and logic unit.
 // Every unit computes every cycle; alu_op selects the answer.
 module alu
   import riscv_pkg::*;

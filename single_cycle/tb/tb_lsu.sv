@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-// tb_lsu.sv - load/store byte lanes (PDF Lesson 10.2).
+// tb_lsu.sv - load/store byte lanes.
 // Stores: data shifted into the right lane + the right write mask.
 // Loads:  lane selected by addr[1:0], then sign- or zero-extended.
 module tb_lsu;

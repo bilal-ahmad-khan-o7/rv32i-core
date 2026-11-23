@@ -1,6 +1,5 @@
 `timescale 1ns/1ps
-// imem.sv - instruction memory, read-only ROM with combinational read
-// (PDF Lesson 5.4.4, Listing 5.2).
+// imem.sv - instruction memory, read-only ROM with combinational read.
 // Filled with nop, then loaded from INIT_FILE (one 32-bit hex word per line).
 // The $readmemh path is relative to the directory vvp runs in.
 module imem #(

@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 // tb_imem.sv - instruction memory loads a hex file and maps byte addresses to
-// words (PDF Lesson 5.4.4). imem_demo.hex holds four words; the rest must be nop.
+// words. imem_demo.hex holds four words; the rest must be nop.
 // Icarus prints a "Not enough words in the file" warning: expected and harmless.
 module tb_imem;
   logic [31:0] addr, instr;

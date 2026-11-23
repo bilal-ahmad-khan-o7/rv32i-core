@@ -1,15 +1,14 @@
 """Compile and run every testbench of the pipelined core with Icarus Verilog.
 
-    python sim/run_tests.py              # the fast suite
-    python sim/run_tests.py alu random   # only those
-    python sim/run_tests.py -v core      # also print the full simulator output
-    python sim/run_tests.py kws          # slow: hello and the KWS model, never run by default
-    python sim/run_tests.py random_slow  # slow: 300 new random programs against rv32iss
+    python3 sim/run_tests.py              # the fast suite
+    python3 sim/run_tests.py alu random   # only those
+    python3 sim/run_tests.py -v core      # also print the full simulator output
+    python3 sim/run_tests.py kws          # slow: hello and the KWS model, never run by default
+    python3 sim/run_tests.py random_slow  # slow: 300 new random programs against rv32iss
 
 Runs from this folder (pipelined/), whatever the current directory is. The blocks the
 pipelined core reuses unchanged, and their unit testbenches, come from ../single_cycle/;
-so do the KWS images and rv32iss. Needs iverilog and vvp (Icarus 12+) on PATH, or in
-C:\\iverilog\\bin. random_slow also needs a host gcc, to build rv32iss.
+so do the KWS images and rv32iss. Needs iverilog and vvp (Icarus 12+) on PATH. random_slow also needs a host gcc, to build rv32iss.
 Exit code is 0 only if every testbench passes.
 """
 import os
@@ -178,13 +177,7 @@ def runs_of(name):
 
 
 def find_tool(name):
-    path = shutil.which(name)
-    if path:
-        return path
-    fallback = Path(r"C:\iverilog\bin") / (name + ".exe")
-    if fallback.exists():
-        return str(fallback)
-    sys.exit(f"error: {name} not found on PATH (install Icarus Verilog 12+)")
+    return shutil.which(name) or sys.exit(f"error: {name} not found on PATH (install Icarus Verilog 12+)")
 
 
 def rel(p):

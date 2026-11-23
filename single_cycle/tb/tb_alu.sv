@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-// tb_alu.sv - ALU (PDF Lesson 7.2.4).
+// tb_alu.sv - ALU.
 // Part 1: edge cases with HAND-WORKED expected values (checks RISC-V semantics).
 // Part 2: random data for every operation against a behavioural model
 //         (checks the multiplexing and the alu_op codes).

@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-// imm_gen.sv - immediate generator (PDF Lesson 7.3, Listing 7.3).
+// imm_gen.sv - immediate generator.
 // Five fixed wirings of instruction bits and a 5-to-1 mux. Every line must
 // total 32 bits; the sign bit is always instr[31].
 module imm_gen

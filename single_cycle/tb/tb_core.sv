@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 // tb_core.sv - whole-core smoke test of the base RV32I instructions
-// (PDF Lesson 11.3.1 style; the new instructions are in tb_core_dot64.sv).
+// (the new instructions are in tb_core_dot64.sv).
 // Runs programs/smoke.hex until ebreak (normal stop), an illegal instruction,
 // or a cycle limit, then checks every register and the data-memory results
 // against values worked out by hand (see programs/smoke.s).

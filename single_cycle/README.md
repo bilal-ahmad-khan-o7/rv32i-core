@@ -22,7 +22,7 @@ It is split into five **stage modules** (`if_stage`, `id_stage`, `ex_stage`, `me
 | `tb/tb_*.sv` | one testbench per block, plus `tb_core.sv`, `tb_core_dot64.sv` and `tb_core_kws.sv` (whole core) |
 | `programs/smoke.s`, `smoke.hex` | RV32I smoke program (hand-encoded, annotated listing) |
 | `programs/gen_dot64.py` | generates the dot64 test: `dot64.s`, `dot64.hex`, `dot64_data.hex`, `dot64_expect.svh` |
-| `programs/imem_demo.hex` | the PDF's 4-word program, used by `tb_imem` and `tb_dmem` |
+| `programs/imem_demo.hex` | a 4-word program, used by `tb_imem` and `tb_dmem` |
 | `sim/run_tests.py` | compiles and runs every testbench with Icarus |
 | `sim/iss/rv32iss.c` | instruction simulator, the golden model for the RTL |
 | `kws/sw/` | bare-metal C: `crt0.S`, `link.ld`, `nn_insn.h`, `hello.c` (bring-up), `kws.c` (the model) |
@@ -34,14 +34,14 @@ It is split into five **stage modules** (`if_stage`, `id_stage`, `ex_stage`, `me
 
 ## Running the tests
 
-Requires Icarus Verilog 12+ (`iverilog`, `vvp`) on `PATH` or in `C:\iverilog\bin`, and Python 3. Run from this folder:
+Requires Icarus Verilog 12+ (`iverilog`, `vvp`) on `PATH`, and Python 3. Run from this folder:
 
 ```bash
-python sim/run_tests.py
+python3 sim/run_tests.py
 ```
 
 ```bash
-python sim/run_tests.py -v core_dot64
+python3 sim/run_tests.py -v core_dot64
 ```
 
 The first runs all 13 default testbenches; `-v` prints the full simulator output. Every testbench prints `PASS: tb_<name>` or `FAIL: …`, and the script exits non-zero if any fails. It switches to the project folder itself, so it can be started from anywhere.
@@ -59,7 +59,7 @@ gtkwave build/tb_core_dot64.vcd
 `dot64.s`, `dot64.hex`, `dot64_data.hex` and `dot64_expect.svh` are generated and committed. After changing the generator, rebuild them:
 
 ```bash
-python programs/gen_dot64.py
+python3 programs/gen_dot64.py
 ```
 
 ## The new instructions
@@ -109,7 +109,7 @@ rd ← rd + sext(rs1[7:0])  ·sext(rs2[7:0])   + sext(rs1[15:8]) ·sext(rs2[15:8
 - Examples: 0x7FFFFFFF → 0x7F; 0x80000000 → 0xFFFFFF80; 128 → 127; −129 → −128.
 - The rs2 field must be `00000`; any other value is illegal, which keeps the field free for later use.
 
-**Every other custom-0 combination is illegal.** That includes funct3 `000`, which is left free: it is the slot the PDF's `andn` exercise (9.9.4) uses.
+**Every other custom-0 combination is illegal.** That includes funct3 `000`, which is left free for a later instruction.
 
 
 ### How the datapath changed
@@ -214,7 +214,7 @@ Each bug below was planted, the whole suite was run, and the bug was removed.
 
 | Planted bug | Testbenches that failed |
 |---|---|
-| OP_IMM uses `funct7_5` for `sub` (PDF Lesson 9.9) | `tb_control`, `tb_core` (x2 = `00000003` instead of `fffffffd`), `tb_core_dot64` (`addi x2, x0, 0x440` has bit 30 set) |
+| OP_IMM uses `funct7_5` for `sub` (`addi` with bit 30 set becomes a subtract) | `tb_control`, `tb_core` (x2 = `00000003` instead of `fffffffd`), `tb_core_dot64` (`addi x2, x0, 0x440` has bit 30 set) |
 | `lbu` sign-extends | `tb_lsu`, `tb_core` |
 | div/rem decode as `mul` (funct3[2] ignored) | `tb_control` |
 | register-file port 3 reads with rs2's address | `tb_regfile`, `tb_core_dot64` |
@@ -225,7 +225,9 @@ Each bug below was planted, the whole suite was run, and the bug was removed.
 **Not covered yet:**
 - misaligned accesses (unsupported by design)
 - `ecall`/`fence` semantics beyond "no state change"
-- long random programs and the official `riscv-tests` / RISCOF suites
+- long random programs (the pipelined core's suite runs 300 of them against `rv32iss`)
+
+The official RISC-V architectural tests pass on this core (38/38 RV32I, 4/4 multiply); see [`../riscof/`](../riscof/).
 
 ## Running the KWS model
 
@@ -235,11 +237,23 @@ The core runs the MLPerf Tiny keyword-spotting model, a DS-CNN (49 × 10 INT8 MF
 - **Real words.** All 12 real recordings tested give the right word. On the 1000 test files the core's 12 scores and label equal TFLite's on every file, at 90.1% accuracy.
 - **Speed.** DOT4.S8 and CLIP.S8 make the whole model 3.48× faster than `mul` alone.
 
+### The three builds: (a), (b) and (c)
+
+The same C program, `kws/sw/kws.c`, is compiled three times. Each build lets the compiler use more of the core's instructions, so comparing them shows what each hardware addition is worth.
+
+| Build | ISA it targets | Compiler flags | How one multiply-accumulate (MAC) is done |
+|---|---|---|---|
+| **(a)** | RV32I only: no multiply instruction | `-march=rv32i` | every `*` calls `__mulsi3`, libgcc's software multiply (a shift-and-add loop of tens of instructions) |
+| **(b)** | RV32I + Zmmul (hardware multiply) | `-march=rv32i_zmmul` | `lb`, `lb`, `mul`, `add`: one MAC per `mul` |
+| **(c)** | RV32I + Zmmul + DOT4.S8 and CLIP.S8 | `-march=rv32i_zmmul -DHAVE_NN` | `lw`, `lw`, `dot4.s8`: four MACs in one instruction; `clip.s8` saturates each output to int8 |
+
+(a) → (b) measures the hardware multiplier; (b) → (c) measures the two custom instructions. All three give the same output bytes. Build (c) is the one used on the FPGA. `HAVE_NN` switches the inner loops to `dot4_s8()` and `clip_s8()` from `kws/sw/nn_insn.h`, which emit the custom instructions as inline assembly, so no compiler change is needed.
+
 **Softmax is not run on the core.** The core stops at the 12 FC outputs and takes their arg-max; those two things are what is compared with TFLite. Softmax did not change the arg-max on any of the 1,007 inputs tested.
 
 ### Results
 
-Three builds of one C program, `kws/sw/kws.c`: (a) RV32I with multiply in software (libgcc), (b) + Zmmul, (c) + DOT4.S8 and CLIP.S8. The core runs one instruction per clock, so cycles = instructions. Figures are means over the 12 real recordings. `kws/results.md` is the generated copy.
+Builds (a), (b) and (c) are described [above](#the-three-builds-a-b-and-c). The core runs one instruction per clock, so cycles = instructions. Figures are means over the 12 real recordings. `kws/results.md` is the generated copy.
 
 **Build (a) is an instruction-simulator count, cross-checked with the RTL on the first conv layer** (a full Icarus run would take about 8 hours). Builds (b) and (c) are also simulator counts, and the RTL matched them at every marker: (c) on all 19 inputs, (b) on one recording.
 
@@ -325,39 +339,39 @@ The read-only tables are 24,368 B of weights and biases plus 6,924 B of requanti
 The committed images in `kws/gen` need only Icarus, Python and a host `gcc`, plus the real recordings for the runs that use them (see [Inputs](#inputs)). Run from this folder.
 
 ```bash
-python sim/run_tests.py kws
+python3 sim/run_tests.py kws
 ```
 
 ```bash
-python kws/run_all.py iss
+python3 kws/run_all.py iss
 ```
 
 ```bash
-python kws/run_all.py rtl
+python3 kws/run_all.py rtl
 ```
 
-- `sim/run_tests.py kws` is the regression test, in the RTL, and takes about 10 minutes. It is a separate target, not part of the default 13. It runs `hello` on all three builds, then the whole model, build (c), on two inputs: `tst_000012_Go_1` (the one committed recording where FC's rounding shows) and `syn_random` (which drives the upper clamp). The programs, layer table and expected files are used unchanged by the pipelined core in [`../pipelined/`](../pipelined/), whose `tb_core_kws` takes the marker store from EX and the trace from WB.
+- `sim/run_tests.py kws` is the regression test, in the RTL, and takes about 10 minutes. It is a separate target, not part of the default 13. It runs `hello` on all three builds, then the whole model, build (c), on two inputs: `tst_000012_Go_1` (the recording where FC's rounding shows) and `syn_random` (which drives the upper clamp). The programs, layer table and expected files are used unchanged by the pipelined core in [`../pipelined/`](../pipelined/), whose `tb_core_kws` takes the marker store from EX and the trace from WB.
 - `kws/run_all.py iss` runs all 19 inputs on all three builds on the simulator, checks every layer, and rewrites `kws/results.md`. It takes about 20 seconds.
 - `kws/run_all.py rtl` repeats the checks in the RTL, comparing bytes and counts: (c) on all 19 inputs, (b) on one recording, (a) up to the end of the first conv. It takes up to an hour.
 
-Changing the C code needs the [xPack RISC-V GCC](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack) (`RISCV_TOOLS` names its `bin` folder; the default is `C:\xpack\xpack-riscv-none-elf-gcc-15.2.0-1\bin`). `kws/build.py` passes `-Werror`, because a generated table that only warned once produced wrong results.
+Changing the C code needs a RISC-V GCC with rv32i/ilp32 libraries: `riscv-none-elf-gcc` ([xPack](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack)) or `riscv64-unknown-elf-gcc`, found on `PATH` (or set `RISCV_PREFIX`). The committed images were built with xPack GCC 15.2; another version gives equally correct images with slightly different cycle counts (GCC 14.2: build (c) takes 3,368,957 instructions instead of 3,368,932). `kws/build.py` passes `-Werror`, because a generated table that only warned once produced wrong results.
 
 ```bash
-python kws/build.py kws
+python3 kws/build.py kws
 ```
 
 Changing the reference or the tables needs TFLite in a virtual environment (`numpy` and `ai-edge-litert`):
 
 ```bash
-.venv/Scripts/python.exe kws/ref/check_ref.py --all
+.venv/bin/python kws/ref/check_ref.py --all
 ```
 
 ```bash
-.venv/Scripts/python.exe kws/ref/gen_kws.py
+.venv/bin/python kws/ref/gen_kws.py
 ```
 
 ```bash
-.venv/Scripts/python.exe kws/run_all.py accuracy
+.venv/bin/python kws/run_all.py accuracy
 ```
 
 `check_ref.py` compares the NumPy model with TFLite on every layer. `--all` and `accuracy` need the 1000 files, fetched by `kws/ref/fetch_eembc.py`.
@@ -388,7 +402,7 @@ Changing the reference or the tables needs TFLite in a virtual environment (`num
 - **Average pool divides by 125,** rounding to the nearest and truncating as TFLite does. The published `.tflite` has a 25 × 5 pool; the current `keras_model.py` in `mlcommons/tiny` says (24, 5), but the binary is what runs. Builds (b) and (c) need no divide routine, because GCC turns `/ 125` into an exact reciprocal multiply (`mulh` by `0x10624DD3`). Only build (a) calls `__divsi3`.
 - **CLIP.S8 alone is exact.** Every CONV_2D and DEPTHWISE_CONV_2D has a fused ReLU and output zero point −128, so clamping to [−128, 127] *is* ReLU + clamp. FC has no ReLU (output zero point 14); clamping is still correct there.
 - **Weights** have zero point 0 and per-channel scales (64 per layer), so signed × signed on the raw bytes is exact, with per-channel requantisation tables.
-- **Model size.** The weights and biases are **24,376 bytes** in the model (the core needs 24,368 B; the other 8 are a reshape shape). The 52.5 KB figure quoted here earlier was the whole `.tflite` file (53,936 B), including metadata.
+- **Model size.** The weights and biases are **24,376 bytes** in the model (the core needs 24,368 B; the other 8 are a reshape shape).
 
 ### Inputs
 
@@ -397,16 +411,16 @@ Changing the reference or the tables needs TFLite in a virtual environment (`num
 
 The EEMBC repository has no licence and says "Copyright of EEMBC", so the recordings, and the files generated from them, are **not in this repository**. The `kws` regression target, `kws/run_all.py` and the FPGA build need them; the synthetic inputs and every other test do not. To recreate them:
 
-1. `python kws/ref/fetch_eembc.py` downloads all 1000 files into `kws/inputs/eembc_all/`;
+1. `python3 kws/ref/fetch_eembc.py` downloads all 1000 files into `kws/inputs/eembc_all/`;
 2. copy the 12 named in the table above into `kws/inputs/real/`;
 3. `kws/ref/gen_kws.py` writes `kws/gen/input_tst_*.hex` and `expect_tst_*.hex`;
-4. `python ../fpga/make_mem.py` writes the FPGA's data image.
+4. `python3 ../fpga/make_mem.py` writes the FPGA's data image.
 
 Replacing them with features generated from Speech Commands v2 by the MLPerf pipeline would allow committing them; a WAV-to-word demo at the FPGA step would need that anyway.
 
 ### The KWS test has been shown to fail
 
-Each bug was planted in a private copy of the project, and `python sim/run_tests.py kws` was run there. All ten failed the test, each at the layer where the bug lives.
+Each bug was planted in a scratch copy of the project, and `python3 sim/run_tests.py kws` was run there. All ten failed the test, each at the layer where the bug lives.
 
 | Planted bug | Caught at | By |
 |---|---|---|
@@ -428,11 +442,11 @@ The last two would have passed before the label became a checked row and before 
 `sim/iss/rv32iss.c` is a single C file with no dependencies. It runs at about 200 M instructions per second, against about 12 k cycles per second for Icarus, which is what makes build (a) and the 1000-file run possible. It stays as the golden model for the pipelined core.
 
 ```bash
-gcc -O2 -std=gnu11 -o build/rv32iss.exe sim/iss/rv32iss.c
+gcc -O2 -std=gnu11 -o build/rv32iss sim/iss/rv32iss.c
 ```
 
 ```bash
-./build/rv32iss.exe --imem kws/gen/kws_c.imem.hex --dmem kws/gen/kws_c.dmem.hex --load kws/gen/input_tst_000007_Yes_9.hex@0x1000F000 --layers kws/gen/layers.hex --expect kws/gen/expect_tst_000007_Yes_9.hex
+./build/rv32iss --imem kws/gen/kws_c.imem.hex --dmem kws/gen/kws_c.dmem.hex --load kws/gen/input_tst_000007_Yes_9.hex@0x1000F000 --layers kws/gen/layers.hex --expect kws/gen/expect_tst_000007_Yes_9.hex
 ```
 
 - **It matches the RTL,** including memory aliasing and the decode holes listed under Known limitations. The two share the layer table and expected-output files.
@@ -474,14 +488,13 @@ pdflatex diagrams.tex
 
 Each figure also compiles on its own, e.g. `pdflatex fig_ex_stage.tex`. The files are `fig_datapath`, `fig_if_stage`, `fig_id_stage`, `fig_ex_stage`, `fig_mem_stage`, `fig_wb_stage`; the shared styles are in `rv32i_style.tex`. For PNGs (e.g. for a Word report): `pdftoppm -png -r 300 fig_datapath.pdf fig_datapath`.
 
-## Deliberate differences
+## Design choices
 
-**From the PDF listings:**
-- **Stage modules** instead of a flat `riscv_core.sv`, so pipelining only adds registers.
+- **Stage modules** instead of one flat `riscv_core.sv`, so pipelining only adds registers.
 - **Next-PC split:**
   - `ex_stage` decides `pc_redirect = jalr | jump | (branch & take_branch)` and computes `redirect_pc`.
   - `if_stage` only picks `redirect_pc` or `pc_plus4`.
-  - This behaves the same as Listing 10.4, and `pc_redirect` becomes the pipeline's flush signal.
+  - `pc_redirect` then becomes the pipeline's flush signal unchanged.
 - **Writes blocked during reset** (`rf_we = reg_write & ~rst`, same for data memory). Without this, the instruction at `RESET_ADDR` would write once per reset cycle.
 - **Full funct7 decode:** `control` checks all of `instr[31:25]` (and the rs2 field for CLIP.S8), not only `instr[30]`.
 - **Extension results are picked in EX** (`ex_sel`), not by widening `wb_sel`. The memory address comes straight from `alu_y`.
@@ -491,7 +504,7 @@ Each figure also compiles on its own, e.g. `pdflatex fig_ex_stage.tex`. The file
 ## Known limitations
 
 - **No division.** The core implements Zmmul only, so `div`, `divu`, `rem` and `remu` are illegal. Software must divide with a library routine (GCC's `-march=rv32i_zmmul` does this), or by a reciprocal multiply, as GCC does for KWS's divide by 125.
-- **Memory size.** Instruction and data memories default to 4 KiB each, with combinational (LUTRAM) reads. `tb_core_kws` sets 32 KiB and 64 KiB through the parameters. The pipeline switches to synchronous-read BRAM later.
+- **Memory size.** Instruction and data memories default to 4 KiB each, with combinational (LUTRAM) reads. `tb_core_kws` sets 32 KiB and 64 KiB through the parameters. The pipelined core uses synchronous-read block RAM instead.
 - **Remaining decode holes.** These encodings are *not* flagged illegal and execute as shown:
   - loads with funct3 `011`/`110`/`111` run as `lw`;
   - stores with funct3 ≥ `011` run as `sw`;

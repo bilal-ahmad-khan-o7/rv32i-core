@@ -1,6 +1,6 @@
 """Fetch all 1000 EEMBC kws01 feature files into kws/inputs/eembc_all (not committed).
 
-    python kws/ref/fetch_eembc.py
+    python3 kws/ref/fetch_eembc.py
 
 Each file is 490 INT8 values: the MFCC features of one Speech Commands v2 test
 recording, from eembc/energyrunner (datasets/kws01). The file names give the word

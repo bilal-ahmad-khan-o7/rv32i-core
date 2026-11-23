@@ -1,11 +1,16 @@
 # RV32I core with INT8 instructions for keyword spotting
 
-A RISC-V core in SystemVerilog, built step by step from a single-cycle design to a 5-stage pipeline, that runs the MLPerf Tiny keyword-spotting (KWS) model on a PYNQ-Z2 FPGA.
+[![tests](https://github.com/bilal-ahmad-khan-o7/rv32i-core/actions/workflows/tests.yml/badge.svg)](https://github.com/bilal-ahmad-khan-o7/rv32i-core/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+A RISC-V core in SystemVerilog, built step by step from a single-cycle design to a 5-stage pipeline, that runs the MLPerf Tiny keyword-spotting (KWS) model on a PYNQ-Z2 FPGA. A solo project: design, verification, software and FPGA build are all my own work.
 
 - **ISA:** RV32I + Zmmul (`mul`, `mulh`, `mulhsu`, `mulhu`) + two custom INT8 instructions, `DOT4.S8` and `CLIP.S8`.
 - **Two cores:** single-cycle, and 5-stage pipelined with forwarding and a one-cycle load-use stall.
 - **Verified:** both pass the official RISC-V architectural tests (RISCOF, compared with Spike), plus unit testbenches, directed hazard tests and random programs checked against an instruction simulator.
 - **Bit-exact KWS:** every layer matches TFLite's reference kernels byte for byte. The custom instructions make the model 3.48× faster than with `mul` alone.
+
+![The 5-stage pipelined core](pipelined/docs/diagrams/fig_pipeline.png)
 
 ## Results
 
@@ -13,11 +18,21 @@ A RISC-V core in SystemVerilog, built step by step from a single-cycle design to
 |---|---:|---:|
 | RISCOF: RV32I / multiply tests | 38/38, 4/4 | 38/38, 4/4 |
 | Max clock on the PYNQ-Z2 (Vivado estimate) | 40.5 MHz | 59.3 MHz |
-| KWS inference, cycles | 3.37 M | 3.56 M (CPI 1.056) |
-| KWS inference, time | 83.2 ms | 60.0 ms |
+| KWS inference, build (c), cycles | 3.37 M | 3.56 M (CPI 1.056) |
+| KWS inference, build (c), time | 83.2 ms | 60.0 ms |
 | Slice LUTs / flip-flops / BRAM tiles / DSPs | 11,061 / 42 / 0 / 4 | 1,784 / 621 / 24 / 4 |
 
-KWS with the custom instructions: 3.37 M cycles. With Zmmul only: 11.7 M. With software multiply: 333 M. Accuracy on the 1000 test files is 90.1%, the same as TFLite.
+### What builds (a), (b) and (c) are
+
+The KWS model is one C program, compiled three times. Each build lets the compiler use more of the core's instructions, so comparing them shows what each piece of hardware is worth.
+
+| Build | Instructions the program may use | One multiply-accumulate is done by | KWS cycles (single-cycle core) |
+|---|---|---|---:|
+| **(a)** | RV32I only | a call to `__mulsi3`, the compiler's software multiply loop | 333 M |
+| **(b)** | RV32I + Zmmul | `mul` + `add`: one multiply-accumulate per `mul` | 11.7 M |
+| **(c)** | RV32I + Zmmul + `DOT4.S8`, `CLIP.S8` | `dot4.s8`: four multiply-accumulates in one instruction | 3.37 M |
+
+All three produce the same output bytes. (b) → (c) is the 3.48× from the custom instructions. Build (c) is the one that runs on the FPGA. Accuracy on the 1000 test files is 90.1%, the same as TFLite.
 
 ## Custom instructions
 
@@ -55,8 +70,12 @@ python3 pipelined/sim/run_tests.py
 cd riscof && ./run_riscof.sh
 ```
 
-The first two run the fast regression suites: 13 and 18 testbenches, a few seconds each. The third runs the 38 RV32I architectural tests.
+The first two run the fast regression suites: 13 and 18 testbenches, a few seconds each, also run by GitHub Actions on every push. The third runs the 38 RV32I architectural tests.
 
 ## Tools
 
 Icarus Verilog, GTKWave, RISC-V GCC, Spike, RISCOF, Vivado, Python (NumPy, TFLite).
+
+## Licence
+
+MIT; see [LICENSE](LICENSE). The KWS model, `single_cycle/kws/model/kws_ref_model.tflite`, is the MLPerf Tiny reference model from [mlcommons/tiny](https://github.com/mlcommons/tiny), under the Apache License 2.0. The EEMBC test recordings are not included; [`single_cycle/README.md`](single_cycle/README.md#inputs) explains how to fetch them.

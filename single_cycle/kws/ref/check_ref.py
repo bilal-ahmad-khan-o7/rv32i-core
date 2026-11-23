@@ -1,7 +1,7 @@
 """Check the Python references against TFLite on every layer.
 
-    python kws/ref/check_ref.py          # the 19 committed inputs
-    python kws/ref/check_ref.py --all    # also the 1000 EEMBC files, if fetched
+    python3 kws/ref/check_ref.py          # the 19 committed inputs
+    python3 kws/ref/check_ref.py --all    # also the 1000 EEMBC files, if fetched
 
 The reference is TFLite with its reference kernels (OpResolverType.BUILTIN_REF).
 The NumPy model must equal it byte for byte on every layer. The script also runs

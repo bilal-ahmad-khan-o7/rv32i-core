@@ -41,7 +41,7 @@ module id_stage
   logic [6:0] funct7;
   logic [2:0] imm_sel;
 
-  // Fixed field positions (Lesson 6.3): plain wires, no decoding needed.
+  // Fixed field positions: plain wires, no decoding needed.
   assign opcode   = instr[6:0];
   assign rd_addr  = instr[11:7];
   assign funct3   = instr[14:12];

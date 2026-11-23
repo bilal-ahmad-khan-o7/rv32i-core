@@ -1,9 +1,9 @@
 `timescale 1ns/1ps
 // lsu.sv - load/store unit: byte-lane logic between the 32-bit datapath and
-// the word-organised data memory (PDF Lesson 10.2, Listings 10.1 and 10.2).
+// the word-organised data memory.
 // Store side: shift the data into its lane and build the byte write mask.
 // Load side:  read word -> select lane -> extend (signed or unsigned).
-// Misaligned accesses are NOT handled (known limitation, Lesson 10.2.2).
+// Misaligned accesses are NOT handled (known limitation).
 module lsu (
   input  logic [2:0]  funct3,
   input  logic [1:0]  addr_lo,      // addr[1:0]: which byte inside the word

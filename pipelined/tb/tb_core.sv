@@ -2,7 +2,7 @@
 // tb_core.sv - whole-core smoke test of the base RV32I instructions, on the PIPELINED core
 // (single_cycle/tb/tb_core.sv with the program path and the +TRACE probes moved:
 // registers are written in WB, stores happen in EX; dbg_pc is the pc in WB).
-// (PDF Lesson 11.3.1 style; the new instructions are in tb_core_dot64.sv).
+// (the new instructions are in tb_core_dot64.sv).
 // Runs programs/smoke.hex until ebreak (normal stop), an illegal instruction,
 // or a cycle limit, then checks every register and the data-memory results
 // against values worked out by hand (see programs/smoke.s).

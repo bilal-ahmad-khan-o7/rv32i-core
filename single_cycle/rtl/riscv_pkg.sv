@@ -1,11 +1,11 @@
 `timescale 1ns/1ps
 // riscv_pkg.sv - shared constants for the single-cycle RV32I core.
 // One definition, imported by the ALU, the control unit and the testbenches,
-// so the codes cannot drift apart (PDF Lesson 7.2.1).
+// so the codes cannot drift apart.
 // Icarus needs this file listed FIRST on the command line.
 package riscv_pkg;
 
-  // ---- Opcodes: instr[6:0] (Lesson 6, Table 9.2) --------------------------
+  // ---- Opcodes: instr[6:0] ------------------------------------------------
   localparam logic [6:0] OP_LOAD   = 7'b0000011;  // lb lh lw lbu lhu
   localparam logic [6:0] OP_FENCE  = 7'b0001111;  // fence (treated as nop)
   localparam logic [6:0] OP_IMM    = 7'b0010011;  // addi slti ... srai
@@ -30,7 +30,7 @@ package riscv_pkg;
   localparam logic [6:0] F7_MULDIV = 7'b0000001;  // M: funct3 0xx = mul mulh mulhsu mulhu
                                                   //    funct3 1xx = div/rem (not in Zmmul: illegal)
 
-  // ---- ALU operations (Lesson 7.2.1) --------------------------------------
+  // ---- ALU operations -----------------------------------------------------
   localparam logic [3:0] ALU_ADD   = 4'd0;   // add addi, loads, stores, jalr, auipc
   localparam logic [3:0] ALU_SUB   = 4'd1;   // sub
   localparam logic [3:0] ALU_SLL   = 4'd2;   // sll slli
@@ -43,14 +43,14 @@ package riscv_pkg;
   localparam logic [3:0] ALU_AND   = 4'd9;   // and andi
   localparam logic [3:0] ALU_PASSB = 4'd10;  // lui (y = b)
 
-  // ---- Immediate formats (Lesson 7.3) -------------------------------------
+  // ---- Immediate formats --------------------------------------------------
   localparam logic [2:0] IMM_I = 3'd0;
   localparam logic [2:0] IMM_S = 3'd1;
   localparam logic [2:0] IMM_B = 3'd2;
   localparam logic [2:0] IMM_U = 3'd3;
   localparam logic [2:0] IMM_J = 3'd4;
 
-  // ---- Write-back select (Lesson 8.4) -------------------------------------
+  // ---- Write-back select --------------------------------------------------
   localparam logic [1:0] WB_ALU = 2'd0;  // ALU result
   localparam logic [1:0] WB_MEM = 2'd1;  // loaded data
   localparam logic [1:0] WB_PC4 = 2'd2;  // pc + 4 (jal, jalr)

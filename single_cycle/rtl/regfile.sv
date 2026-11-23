@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 // regfile.sv - 32 x 32-bit register file: three combinational read ports,
-// one clocked write port (PDF Lesson 5.4.5, Listing 5.3, plus a third read
+// one clocked write port (plus a third read
 // port for DOT4.S8, which reads its accumulator rd as a source).
 // x0 is protected twice: never written, and forced to 0 on read.
 // Initialised with `initial` (not reset) so the FPGA tool can use LUTRAM.

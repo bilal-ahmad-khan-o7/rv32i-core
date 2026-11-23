@@ -53,7 +53,7 @@ a dot joins wires. In Figure~\ref{fig:dp}, rounded flags such as \fbox{\sv{rs2\_
 
 % ------------------------------------------------------------------
 \clearpage
-\section*{Control unit (\sv{rtl/control.sv}, PDF Table 9.2)}
+\section*{Control unit (\sv{rtl/control.sv})}
 \noindent\textbf{Extensions.} Two units sit beside the ALU in \sv{ex\_stage}: \sv{mul\_unit} (Zmmul:
 \sv{mul}, \sv{mulh}, \sv{mulhsu}, \sv{mulhu}; no divide) and \sv{nn\_unit} (custom-0: \sv{DOT4.S8},
 a signed 4\,$\times$\,int8 dot product accumulated into \sv{rd}, and \sv{CLIP.S8}, a clamp to $[-128, 127]$).

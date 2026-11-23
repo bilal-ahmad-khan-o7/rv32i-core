@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
-// tb_dmem.sv - data memory: byte write mask and little-endian placement
-// (PDF Lesson 5.4.3, Figure 5.1), then random masked writes against a model,
+// tb_dmem.sv - data memory: byte write mask and little-endian placement,
+// then random masked writes against a model,
 // then the optional INIT_FILE preload (a second instance).
 // Icarus prints a "Not enough words in the file" warning: expected and harmless.
 module tb_dmem;
