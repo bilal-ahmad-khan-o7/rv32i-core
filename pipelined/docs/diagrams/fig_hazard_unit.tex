@@ -1,0 +1,52 @@
+% fig_hazard_unit.tex - hazard_unit (pipelined/rtl/hazard_unit.sv): load-use stall,
+% redirect flush and fetch stop.
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\input{../../../single_cycle/docs/diagrams/rv32i_style}
+\input{pipe_macros}
+\begin{document}
+\begin{tikzpicture}
+  \node[title, anchor=west] at (-3.4,10.4) {hazard\_unit \textmd{\normalsize --- stall, flush and fetch stop}};
+  \modbox{0}{9.6}{9.6}{8.6}{hazard unit}{u\_hazard : hazard\_unit}
+  \pin{8.4}{clk}{}
+  \cpin{7.9}{rst}{}
+  \cpin{7.1}{if\_id\_valid}{}
+  \pin{6.6}{if\_id\_rs1\_addr}{4:0}
+  \pin{6.1}{if\_id\_rs2\_addr}{4:0}
+  \pin{5.6}{if\_id\_rd\_addr}{4:0}
+  \cpin{5.1}{id\_rs3\_read}{}
+  \cpin{4.6}{id\_system}{}
+  \cpin{4.1}{id\_illegal}{}
+  \cpin{3.3}{id\_ex\_mem\_read}{}
+  \pin{2.8}{id\_ex\_rd\_addr}{4:0}
+  \cpin{2.0}{ex\_redirect}{}
+  \cpout{7.9}{stall}{}
+  \cpout{7.2}{flush}{}
+  \cpout{6.2}{pc\_hold}{}
+  \cpout{5.5}{if\_id\_write}{}
+  \cpout{4.8}{if\_id\_flush}{}
+  \cpout{4.1}{id\_ex\_flush}{}
+  \node[state, minimum width=24mm, minimum height=9mm] at (7.6,2.0)
+       {\textbf{fetch\_stopped}\\[-1pt]{\scriptsize set once; cleared by rst}};
+  \node[notetxt, text=ink, anchor=north west, align=left, font=\scriptsize\ttfamily] at (0.25,8.2)
+    {stall   = id\_ex\_mem\_read \& id\_ex\_rd $\neq$ 0 \&\\
+     \hphantom{stall   = }(id\_ex\_rd = rs1 | id\_ex\_rd = rs2 |\\
+     \hphantom{stall   = (}(id\_rs3\_read \& id\_ex\_rd = rd))\\[3pt]
+     flush   = ex\_redirect\\[3pt]
+     id\_stop = if\_id\_valid \& (id\_system | id\_illegal)\\
+     fetch\_stopped <= 1 when id\_stop \& !stall \& !flush\\[3pt]
+     pc\_hold     = stall | id\_stop | fetch\_stopped\\
+     if\_id\_write = !stall\\
+     if\_id\_flush = flush | ((id\_stop | fetch\_stopped) \& !stall)\\
+     id\_ex\_flush = flush | stall};
+  \node[notetxt, anchor=north west, align=left] at (-3.4,-0.4)
+    {stall: the load's value is ready at the end of MEM, one cycle too late; ID waits once, then MEM/WB forwards it.\\
+     flush: a taken branch, jal or jalr in EX; the two instructions behind it (IF, ID) become bubbles; if\_stage fetches redirect\_pc.\\
+     fetch stop: nothing behind ebreak, ecall or an illegal word runs, so when it reaches WB no younger instruction has written anything.\\
+     A redirect and a load-use stall cannot happen together (one needs a jump in EX, the other a load).};
+  \legend{-3.0}{-2.6}
+\end{tikzpicture}
+\end{document}

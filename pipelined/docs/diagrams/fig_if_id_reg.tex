@@ -1,0 +1,11 @@
+% fig_if_id_reg.tex - if_id_reg (pipelined/rtl/if_id_reg.sv)
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\input{../../../single_cycle/docs/diagrams/rv32i_style}
+\input{fig_regs}
+\begin{document}
+\pipereg{IF/ID register}{u\_if\_id : if\_id\_reg}{valid, pc[31:0], pc\_plus4[31:0], instr[31:0]}{clk, rst\\write = 0: hold, flush = 1: bubble}{A bubble: valid = 0 and instr = nop.\\write = 0 during a load-use stall; flush on a\\redirect, or once fetch has stopped (ebreak).}{if\_id\_}
+\end{document}

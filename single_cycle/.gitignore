@@ -1,0 +1,16 @@
+# simulation output
+build/
+# LaTeX intermediates (the PDFs are kept)
+docs/diagrams/*.aux
+docs/diagrams/*.log
+docs/diagrams/*.out
+__pycache__/
+# local Python environment for the KWS reference
+.venv/
+# the 988 EEMBC feature files that are not committed (see kws/ref/inputs.py)
+kws/inputs/eembc_all/
+# EEMBC's kws01 features have no open licence, so the 12 real recordings and the
+# files generated from them stay local (see "Inputs" in README.md)
+kws/inputs/real/
+kws/gen/input_tst_*.hex
+kws/gen/expect_tst_*.hex

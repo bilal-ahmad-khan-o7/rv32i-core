@@ -1,0 +1,10 @@
+# rv32i_core_platform.yaml - platform details (timers, reset), riscv-config format.
+# The core has no timer and no interrupts.
+mtime:
+  implemented: false
+mtimecmp:
+  implemented: false
+nmi:
+  label: nmi_vector
+reset:
+  label: reset_vector

@@ -1,0 +1,4 @@
+# Vivado results and simulation output
+out/
+# data image with an EEMBC recording merged in: generate it with make_mem.py
+mem/*tst_*.hex

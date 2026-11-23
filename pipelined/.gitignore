@@ -1,0 +1,7 @@
+# simulation output
+build/
+# LaTeX intermediates (the PDFs are kept)
+docs/diagrams/*.aux
+docs/diagrams/*.log
+docs/diagrams/*.out
+__pycache__/

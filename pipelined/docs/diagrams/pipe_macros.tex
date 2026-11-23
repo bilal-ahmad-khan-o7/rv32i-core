@@ -1,0 +1,24 @@
+% pipe_macros.tex - helpers for the pipelined core's module figures (after rv32i_style).
+
+% A module drawn as a box with its ports listed on the left (inputs) and right (outputs).
+% \modbox{x}{y}{width}{height}{title}{instance : module}
+\newcommand{\modbox}[6]{%
+  \node[block, minimum width=#3cm, minimum height=#4cm, anchor=north west] (box) at (#1,#2) {};
+  \node[font=\bfseries, text=ink, anchor=north] at ($(box.north)+(0,-0.15)$) {#5};
+  \node[sig, anchor=north] at ($(box.north)+(0,-0.6)$) {#6};}
+
+% One input port: a short wire into the box's left edge at height y, labelled.
+% \pin{y}{name}{width}      \cpin: the same, for a control signal
+\newcommand{\pin}[3]{%
+  \draw[data] ($(box.west |- 0,#1)+(-1.0,0)$) -- (box.west |- 0,#1);
+  \node[sig, anchor=east] at ($(box.west |- 0,#1)+(-1.05,0)$) {#2\portw{#3}};}
+\newcommand{\cpin}[3]{%
+  \draw[ctl] ($(box.west |- 0,#1)+(-1.0,0)$) -- (box.west |- 0,#1);
+  \node[csig, anchor=east] at ($(box.west |- 0,#1)+(-1.05,0)$) {#2\portw{#3}};}
+% One output port on the right edge.  \pout{y}{name}{width}   \cpout: control
+\newcommand{\pout}[3]{%
+  \draw[data] (box.east |- 0,#1) -- ($(box.east |- 0,#1)+(1.0,0)$);
+  \node[sig, anchor=west] at ($(box.east |- 0,#1)+(1.05,0)$) {#2\portw{#3}};}
+\newcommand{\cpout}[3]{%
+  \draw[ctl] (box.east |- 0,#1) -- ($(box.east |- 0,#1)+(1.0,0)$);
+  \node[csig, anchor=west] at ($(box.east |- 0,#1)+(1.05,0)$) {#2\portw{#3}};}

@@ -1,0 +1,28 @@
+# marker  load-use  redirects  case
+1 0 0 setup
+2 0 0 EX/MEM -> EX, rs1
+3 0 0 EX/MEM -> EX, rs2
+4 0 0 EX/MEM -> EX, rs3 (DOT4.S8 accumulator)
+5 0 0 MEM/WB -> EX, rs1
+6 0 0 MEM/WB -> EX, rs2
+7 0 0 MEM/WB -> EX, rs3
+8 0 0 register-file bypass, rs1/rs2 and rs3
+9 0 0 EX/MEM wins over MEM/WB
+10 1 0 load-use, rs1
+11 1 0 load-use, rs2
+12 1 0 load-use, rs3
+13 1 0 load, then store of the loaded register
+14 0 0 load to x0: no stall
+15 0 0 rs3 only counts when read: addi into the loaded register
+16 0 0 load, then a use two later: MEM/WB, no stall
+17 0 0 branch not taken
+18 0 1 branch taken: the two behind it are flushed
+19 0 1 branch on forwarded operands
+20 0 1 jal, and a use of its link register
+21 0 1 jalr with a forwarded base
+22 1 1 jalr with its base from a load
+23 0 0 8 x DOT4.S8 into one accumulator: no stall
+24 0 0 CLIP.S8 right after DOT4.S8
+25 0 0 writes to x0 are not forwarded
+26 0 0 multiply result forwarded
+27 1 0 store data forwarded, then load and use

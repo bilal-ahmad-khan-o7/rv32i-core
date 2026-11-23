@@ -1,0 +1,11 @@
+% fig_id_ex_reg.tex - id_ex_reg (pipelined/rtl/id_ex_reg.sv)
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\input{../../../single_cycle/docs/diagrams/rv32i_style}
+\input{fig_regs}
+\begin{document}
+\pipereg{ID/EX register}{u\_id\_ex : id\_ex\_reg}{valid, pc[31:0], pc\_plus4[31:0], instr[31:0], rs1\_addr[4:0], rs2\_addr[4:0], rd\_addr[4:0], funct3[2:0], rs1\_data[31:0], rs2\_data[31:0], rs3\_data[31:0], imm[31:0], reg\_write, alu\_src\_a\_pc, alu\_src\_b\_imm, alu\_op[3:0], ex\_sel[1:0], rs3\_read, mem\_read, mem\_write, wb\_sel[1:0], branch, jump, jalr, illegal, system}{clk, rst\\flush = 1: bubble}{Every control signal that changes state is\\ANDed with valid on the way in, so a bubble\\writes nothing and redirects nothing.\\flush on a redirect or a load-use stall.}{id\_ex\_}
+\end{document}

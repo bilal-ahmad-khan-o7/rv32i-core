@@ -1,0 +1,61 @@
+% fig_mem_stage.tex - mem_stage of the pipelined core (pipelined/rtl/mem_stage.sv): the
+% access is issued from EX and completed in MEM; lsu is used twice, store side and load side.
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\input{../../../single_cycle/docs/diagrams/rv32i_style}
+\begin{document}
+\begin{tikzpicture}
+  \draw[stage, fill=tintEX]  (0,0) rectangle (8.6,9);
+  \draw[stage, fill=tintMEM] (8.6,0) rectangle (17,9);
+  \node[title, anchor=north west] at (0.25,8.85) {mem\_stage \textmd{\normalsize --- Memory access (pipelined)}};
+  \node[sig, font=\small\bfseries\ttfamily, anchor=north west] at (0.25,8.1) {EX side};
+  \node[sig, font=\small\bfseries\ttfamily, anchor=north west] at (8.85,8.1) {MEM side};
+  \draw[ink, dashed, line width=1pt] (8.6,0) -- (8.6,9);
+  \node[sig, anchor=south, fill=white] at (8.6,8.15) {clock edge = EX/MEM};
+
+  % ports
+  \inport{0}{5.8}{ex\_addr}{31:0}
+  \inport{0}{3.6}{ex\_store\_data}{31:0}
+  \cinport{0}{2.6}{ex\_funct3}{2:0}
+  \cinport{0}{1.6}{ex\_mem\_write}{}
+  \inport{17}{6.9}{}{} \node[sig, anchor=west] at (17.1,6.9) {mem\_addr\_lo\,[1:0]};
+  \cinport{17}{6.2}{}{} \node[csig, anchor=west] at (17.1,6.2) {mem\_funct3\,[2:0]};
+  \outport{17}{4.6}{load\_data}{31:0}
+  \node[portbox] at (8.0,0) {}; \node[sig, anchor=north] at (8.0,-0.1) {clk};
+
+  % store side of lsu
+  \node[block, minimum width=24mm, minimum height=16mm] (ls) at (3.8,3.4)
+       {\textbf{LSU store}\\[-1pt]{\scriptsize\ttfamily u\_lsu\_store : lsu}\\[1pt]{\scriptsize shift + mask}};
+  \draw[data] (0,3.6) -- (ls.west |- 0,3.6);
+  \draw[ctl] (0,2.6) -- (ls.west |- 0,2.6);
+  \draw[data] (1.6,5.8) -- (1.6,4.6) -| node[sig, above, pos=0.3] {[1:0]} ($(ls.north)+(-0.4,0)$);
+  \node[dot] at (1.6,5.8) {};
+
+  % the data memory straddles the boundary: its address register is EX/MEM's
+  \node[state, minimum width=30mm, minimum height=36mm] (dm) at (8.6,4.6)
+       {\blkII{Data}{memory}{u\_dmem : dmem}\\[2pt]{\scriptsize synchronous read}\\{\scriptsize read-first}};
+  \draw[data] (0,5.8) -- (dm.west |- 0,5.8);
+  \node[sig, anchor=west] at (7.15,5.8) {addr};
+  \draw[data] (ls.east |- 0,3.9) -- node[sig, above] {mem\_wdata} (dm.west |- 0,3.9);
+  \draw[data] (ls.east |- 0,3.2) -- node[sig, below] {mem\_wmask} (dm.west |- 0,3.2);
+  \draw[ctl] (0,1.6) -| ($(dm.south)+(-1.0,0)$);
+  \node[sig, anchor=south] at (7.6,2.85) {we};
+  \draw[data] (8.0,0) -- (8.0,2.8);
+
+  % load side of lsu
+  \node[block, minimum width=24mm, minimum height=16mm] (ll) at (13.5,4.6)
+       {\textbf{LSU load}\\[-1pt]{\scriptsize\ttfamily u\_lsu\_load : lsu}\\[1pt]{\scriptsize select + extend}};
+  \draw[data] (dm.east) -- node[sig, above] {mem\_rdata} (ll.west);
+  \draw[data] (17,6.9) -| ($(ll.north)+(-0.5,0)$);
+  \draw[ctl] (17,6.2) -| ($(ll.north)+(0.5,0)$);
+  \draw[data] (ll.east) -- (17,4.6);
+
+  \node[notetxt, anchor=north west, align=left] at (9.0,2.9)
+    {end of EX: address, mask and data go in;\\a store writes at this edge.\\
+     MEM: the word comes out; the load's byte\\is picked and extended. Ready at the end\\of MEM: one cycle of load-use penalty.};
+  \legend{0.2}{-1.2}
+\end{tikzpicture}
+\end{document}

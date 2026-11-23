@@ -1,0 +1,18 @@
+# downloaded or generated - never commit these
+riscv-arch-test/
+riscof_work/
+riscof_work_*/
+__pycache__/
+*.pyc
+# LaTeX build files of the guide (the PDF itself is kept)
+guide/*.aux
+guide/*.log
+guide/*.out
+guide/*.toc
+guide/*.fls
+guide/*.fdb_latexmk
+last_run.log
+last_run.log.tmp
+selected_tests.yaml
+# local copies of config.ini (e.g. config_mul.ini for the multiply run)
+config_*.ini

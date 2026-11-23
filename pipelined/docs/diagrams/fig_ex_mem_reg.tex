@@ -1,0 +1,11 @@
+% fig_ex_mem_reg.tex - ex_mem_reg (pipelined/rtl/ex_mem_reg.sv)
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\input{../../../single_cycle/docs/diagrams/rv32i_style}
+\input{fig_regs}
+\begin{document}
+\pipereg{EX/MEM register}{u\_ex\_mem : ex\_mem\_reg}{valid, pc[31:0], pc\_plus4[31:0], instr[31:0], rd\_addr[4:0], funct3[2:0], alu\_y[31:0], ex\_result[31:0], store\_data[31:0], reg\_write, mem\_write, wb\_sel[1:0], illegal, system}{clk, rst\\never stalls or flushes}{Its address half is inside the data memory\\(the block RAM's address register).\\alu\_y[1:0] and funct3 pick the load's byte in MEM.}{ex\_mem\_}
+\end{document}

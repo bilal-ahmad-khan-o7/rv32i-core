@@ -1,0 +1,11 @@
+% fig_mem_wb_reg.tex - mem_wb_reg (pipelined/rtl/mem_wb_reg.sv)
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\input{../../../single_cycle/docs/diagrams/rv32i_style}
+\input{fig_regs}
+\begin{document}
+\pipereg{MEM/WB register}{u\_mem\_wb : mem\_wb\_reg}{valid, pc[31:0], pc\_plus4[31:0], instr[31:0], rd\_addr[4:0], alu\_y[31:0], ex\_result[31:0], load\_data[31:0], store\_data[31:0], reg\_write, mem\_write, wb\_sel[1:0], illegal, system}{clk, rst\\never stalls or flushes}{The instruction finishing: the core's dbg\_* outputs\\come from here (dbg\_mem\_* describe its store).\\wb\_stage picks wb\_data from it.}{mem\_wb\_}
+\end{document}

@@ -1,0 +1,54 @@
+% fig_forward_unit.tex - forward_unit (pipelined/rtl/forward_unit.sv) and the three
+% forwarding muxes in front of ex_stage (in riscv_core).
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\input{../../../single_cycle/docs/diagrams/rv32i_style}
+\input{pipe_macros}
+\begin{document}
+\begin{tikzpicture}
+  \node[title, anchor=west] at (-3.4,8.2) {forward\_unit \textmd{\normalsize --- where each EX operand comes from}};
+  \modbox{0}{7.4}{7.2}{6.2}{forward unit}{u\_forward : forward\_unit}
+  \pin{6.2}{id\_ex\_rs1\_addr}{4:0}
+  \pin{5.6}{id\_ex\_rs2\_addr}{4:0}
+  \pin{5.0}{id\_ex\_rd\_addr}{4:0}
+  \cpin{4.0}{ex\_mem\_reg\_write}{}
+  \pin{3.4}{ex\_mem\_rd\_addr}{4:0}
+  \cpin{2.4}{mem\_wb\_reg\_write}{}
+  \pin{1.8}{mem\_wb\_rd\_addr}{4:0}
+  \cpout{5.6}{forward\_a}{1:0}
+  \cpout{4.4}{forward\_b}{1:0}
+  \cpout{3.2}{forward\_c}{1:0}
+  \node[notetxt, text=ink, anchor=north west, align=left] at (0.25,5.9)
+    {\texttt{forward\_a =}\\
+     \quad\texttt{EX/MEM writes rs1 (and rd $\neq$ 0)} $\to$ \texttt{10}\\
+     \quad\texttt{else MEM/WB writes rs1 (rd $\neq$ 0)} $\to$ \texttt{01}\\
+     \quad\texttt{else} $\to$ \texttt{00}\\[3pt]
+     \texttt{forward\_b}: the same for rs2\\
+     \texttt{forward\_c}: the same for rs3,\\
+     \quad the rd field (DOT4.S8's accumulator)\\[3pt]
+     EX/MEM first: it holds the newer value.\\
+     A write to x0 is never forwarded.};
+
+  % one of the three muxes, as riscv_core builds it
+  \begin{scope}[shift={(13.2,2.4)}]
+    \node[title, anchor=west] at (-1.6,4.4) {\normalsize in riscv\_core: one mux per operand};
+    \muxR{m}{1.6}{2.0}{2.2}
+    \draw[data] (-1.2,2.7) -- node[sig, above, pos=0.35] {id\_ex\_rs1\_data} (m-l |- 0,2.7);
+    \draw[data] (-1.2,2.0) -- node[sig, above, pos=0.35] {ex\_mem\_value} (m-l |- 0,2.0);
+    \draw[data] (-1.2,1.3) -- node[sig, above, pos=0.35] {wb\_data} (m-l |- 0,1.3);
+    \node[mlbl, anchor=west] at (1.38,2.7) {00};
+    \node[mlbl, anchor=west] at (1.38,2.0) {10};
+    \node[mlbl, anchor=west] at (1.38,1.3) {01};
+    \draw[ctl] (1.6,3.6) -- node[csig, right, pos=0.3] {forward\_a} (m-top);
+    \draw[data] (m-out) -- node[sig, above] {ex\_rs1} (3.6,2.0);
+    \node[notetxt, anchor=north west, align=left] at (-1.2,0.8)
+      {ex\_mem\_value = pc\_plus4 for jal/jalr (wb\_sel = PC4),\\ex\_result otherwise.
+       A load in EX/MEM has no value yet:\\the load-use stall keeps anyone from needing it.\\
+       ex\_rs2 is also the store data; ex\_rs3 is the accumulator.};
+  \end{scope}
+  \legend{-3.0}{0.3}
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,22 @@
+% fig_regs.tex - helper: \pipereg draws one pipeline-register module.
+% \pipereg{title}{instance : module}{fields in (comma list, as "name[width]")}{controls}{note}{output prefix}
+% Each field goes in as its ID-side name and comes out as prefix + name (e.g. id_ex_pc).
+\newcommand{\pipereg}[6]{%
+\begin{tikzpicture}
+  \node[title, anchor=west] at (0,0.7) {#1};
+  \node[sig, anchor=west] at (0,0.15) {#2};
+  \def\yy{-0.6}
+  \foreach \f [count=\i] in {#3} {
+    \pgfmathsetmacro{\yy}{-0.45*\i}
+    \draw[data] (0.6,\yy) -- (2.4,\yy);
+    \node[sig, anchor=east] at (2.35,\yy+0.17) {\f};
+    \draw[data] (6.4,\yy) -- (8.2,\yy);
+    \node[sig, anchor=west] at (6.45,\yy+0.17) {#6\f};
+    \xdef\last{\i}
+  }
+  \node[state, anchor=north west, minimum width=40mm, minimum height=\last*4.5mm+6mm] (r) at (2.4,-0.1) {};
+  \node[font=\bfseries, text=ink] at (r.center) {\begin{tabular}{c}clocked\\[-2pt]register\end{tabular}};
+  \draw[ink, line width=0.7pt] ($(r.south)+(-0.15,0)$) -- ($(r.south)+(0,0.17)$) -- ($(r.south)+(0.15,0)$);
+  \node[csig, anchor=north, align=center] at ($(r.south)+(0,-0.1)$) {#4};
+  \node[notetxt, anchor=north west, align=left] at ($(r.south west)+(-2.2,-1.1)$) {#5};
+\end{tikzpicture}}

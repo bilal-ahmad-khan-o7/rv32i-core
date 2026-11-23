@@ -1,0 +1,68 @@
+% fig_if_stage.tex - if_stage of the pipelined core (pipelined/rtl/if_stage.sv): the
+% synchronous instruction memory is addressed with next_pc, so the word arrives with its pc.
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\input{../../../single_cycle/docs/diagrams/rv32i_style}
+\begin{document}
+\begin{tikzpicture}
+  \draw[stage, fill=tintIF] (0,0) rectangle (15,9.2);
+  \node[title, anchor=north west] at (0.25,9.05) {if\_stage \textmd{\normalsize --- Instruction Fetch (pipelined)}};
+
+  % ports
+  \cinport{0}{7.6}{rst}{}
+  \cinport{0}{6.9}{pc\_redirect}{}
+  \inport{0}{6.2}{redirect\_pc}{31:0}
+  \cinport{0}{5.5}{hold}{}
+  \node[portbox] at (4.3,0) {}; \node[sig, anchor=north] at (4.3,-0.1) {clk};
+  \outport{15}{6.4}{pc}{31:0}
+  \outport{15}{7.9}{pc\_plus4}{31:0}
+  \outport{15}{3.2}{instr}{31:0}
+
+  % next-PC mux: four inputs in priority order
+  \muxR{np}{3.0}{4.6}{3.2}
+  \node[sig, anchor=east, font=\tiny\ttfamily] at (2.65,5.85) {RESET\_ADDR};
+  \node[sig, anchor=east, font=\tiny\ttfamily] at (2.65,5.0) {redirect\_pc};
+  \node[sig, anchor=east, font=\tiny\ttfamily] at (2.65,4.2) {pc};
+  \node[sig, anchor=east, font=\tiny\ttfamily] at (2.65,3.35) {pc + 4};
+  \foreach \y in {5.75, 4.9, 4.1, 3.25} \draw[data] (2.0,\y) -- (2.72,\y);
+  \draw[data] (0,6.2) -- (1.2,6.2) -- (1.2,4.9) -- (2.0,4.9);
+  \draw[ctl] (0,7.6) -- (3.0,7.6) -- (np-top);
+  \draw[ctl] (0,6.9) -- (2.7,6.9);
+  \draw[ctl] (0,5.5) -- (0.9,5.5) -- (0.9,7.25) -- (2.7,7.25);
+  \node[notetxt, anchor=west] at (3.2,7.25) {priority: rst, pc\_redirect, hold, else pc + 4};
+
+  % pc register and instruction memory, both loaded with next_pc
+  \node[state, minimum width=19mm, minimum height=12mm] (pc) at (7.6,6.4) {\blk{PC}{u\_pc : pc\_reg}};
+  \node[state, minimum width=26mm, minimum height=22mm] (im) at (7.6,3.2)
+       {\blkII{Instruction}{memory}{u\_imem : imem}\\[2pt]{\scriptsize synchronous read}};
+  \draw[data] (np-out) -- node[sig, above, pos=0.55] {next\_pc} (4.9,4.6);
+  \node[dot] at (4.9,4.6) {};
+  \draw[data] (4.9,4.6) |- (pc.west);
+  \draw[data] (4.9,4.6) |- node[sig, above, pos=0.75] {addr} (im.west);
+  \draw[data] (4.3,0) -- (4.3,1.2) -| (im.south);
+  \draw[data] (4.3,1.2) -- (10.4,1.2) -- (10.4,5.3) -| (pc.south);
+  \node[dot] at (4.3,1.2) {};
+
+  % outputs
+  \draw[data] (pc.east) -- (15,6.4);
+  \node[addr] (p4) at (11.6,7.9) {+};
+  \node[sig, anchor=east] at (11.2,8.45) {4};
+  \draw[data] (11.0,6.4) |- (p4.west);
+  \node[dot] at (11.0,6.4) {};
+  \draw[data] (p4.east) -- (15,7.9);
+  \draw[data] (im.east) -- (15,3.2);
+  % feedback of pc and pc+4 into the mux
+  \draw[data] (12.6,6.4) -- (12.6,0.6) -- (1.6,0.6) -- (1.6,4.1) -- (2.0,4.1);
+  \node[dot] at (12.6,6.4) {};
+  \draw[data] (13.4,7.9) -- (13.4,0.35) -- (1.8,0.35) -- (1.8,3.25) -- (2.0,3.25);
+  \node[dot] at (13.4,7.9) {};
+
+  \node[notetxt, anchor=north west, align=left] at (0.2,-0.55)
+    {pc and the memory's address register take next\_pc at the same edge, so during each cycle instr = mem[pc]:
+     no extra fetch cycle.\\hold reads the same word again; a redirect fetches the target.};
+  \legend{0.2}{-1.9}
+\end{tikzpicture}
+\end{document}

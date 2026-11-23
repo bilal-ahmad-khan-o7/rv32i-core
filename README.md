@@ -1,77 +1,62 @@
-# RV32I RISC-V Core
+# RV32I core with INT8 instructions for keyword spotting
 
-A single-cycle RV32I processor written in SystemVerilog, with a self-checking test suite.
-A 5-stage pipelined version is in progress.
+A RISC-V core in SystemVerilog, built step by step from a single-cycle design to a 5-stage pipeline, that runs the MLPerf Tiny keyword-spotting (KWS) model on a PYNQ-Z2 FPGA.
 
-## Status
+- **ISA:** RV32I + Zmmul (`mul`, `mulh`, `mulhsu`, `mulhu`) + two custom INT8 instructions, `DOT4.S8` and `CLIP.S8`.
+- **Two cores:** single-cycle, and 5-stage pipelined with forwarding and a one-cycle load-use stall.
+- **Verified:** both pass the official RISC-V architectural tests (RISCOF, compared with Spike), plus unit testbenches, directed hazard tests and random programs checked against an instruction simulator.
+- **Bit-exact KWS:** every layer matches TFLite's reference kernels byte for byte. The custom instructions make the model 3.48× faster than with `mul` alone.
 
-- [x] Single-cycle RV32I datapath (fetch, decode, execute, memory, writeback)
-- [x] 10/10 self-checking testbenches pass (unit tests + full-core smoke test)
-- [x] All RV32I instructions exercised by the smoke test except ECALL (39/40)
-- [ ] Verified against the official RISC-V architectural tests (RISCOF)
-- [ ] 5-stage pipeline with hazard detection and forwarding
+## Results
+
+| | Single-cycle | Pipelined |
+|---|---:|---:|
+| RISCOF: RV32I / multiply tests | 38/38, 4/4 | 38/38, 4/4 |
+| Max clock on the PYNQ-Z2 (Vivado estimate) | 40.5 MHz | 59.3 MHz |
+| KWS inference, cycles | 3.37 M | 3.56 M (CPI 1.056) |
+| KWS inference, time | 83.2 ms | 60.0 ms |
+| Slice LUTs / flip-flops / BRAM tiles / DSPs | 11,061 / 42 / 0 / 4 | 1,784 / 621 / 24 / 4 |
+
+KWS with the custom instructions: 3.37 M cycles. With Zmmul only: 11.7 M. With software multiply: 333 M. Accuracy on the 1000 test files is 90.1%, the same as TFLite.
+
+## Custom instructions
+
+Both use the custom-0 opcode (`0001011`), R format, funct7 = `0000000`.
+
+| Instruction | funct3 | Operation |
+|---|---|---|
+| `DOT4.S8 rd, rs1, rs2` | `001` | `rd += Σ sext(rs1.byte[i]) · sext(rs2.byte[i])` over the 4 bytes |
+| `CLIP.S8 rd, rs1` | `010` | `rd = clamp(signed(rs1), −128, 127)` |
 
 ## Repository layout
 
-| Folder / file | Contents |
+| Folder | Contents |
 |---|---|
-| `rtl/` | Design (SystemVerilog) |
-| `tb/` | Testbenches, one per block plus `tb_core` for the whole core |
-| `programs/` | Test programs: `smoke.s` (assembly) and `smoke.hex` (machine code) |
-| `sim/run_tests.py` | Regression script: compiles and runs every testbench |
-| `rtl.f` | File list for compiling the design (package first) |
-| `docs/diagrams/` | Block diagrams |
+| [`single_cycle/`](single_cycle/) | the single-cycle core and its testbenches, the KWS C code and Python reference, the instruction simulator `rv32iss` |
+| [`pipelined/`](pipelined/) | the 5-stage pipeline; reuses the unchanged modules and KWS files from `single_cycle/` |
+| [`riscof/`](riscof/) | the RISCOF setup: DUT and Spike plugins, testbench, run script |
+| [`fpga/`](fpga/) | Vivado scripts and the PYNQ-Z2 wrapper for both cores |
 
-### Design modules (`rtl/`)
-
-| Module | Role |
-|---|---|
-| `riscv_pkg` | Shared constants (opcodes, ALU operation codes) |
-| `pc_reg` | Program counter |
-| `imem` / `dmem` | Instruction memory / data memory |
-| `regfile` | 32 x 32-bit register file (x0 hard-wired to 0) |
-| `imm_gen` | Builds immediates for the I/S/B/U/J formats |
-| `control` | Main decoder: turns an instruction into control signals |
-| `alu` | Arithmetic, logic, shift and compare operations |
-| `branch_unit` | Decides whether a branch is taken |
-| `lsu` | Load/store unit: byte/half/word access and sign extension |
-| `if_stage` ... `wb_stage` | Datapath grouped into the five classic steps |
-| `riscv_core` | Top level: connects everything |
+Each folder's README covers its design, tests and results in detail.
 
 ## Quick start
 
-Requirements (Ubuntu / WSL2): `iverilog` (Icarus Verilog 12+), `python3`, `gtkwave` (optional).
-
-Run the full test suite:
+Requires Icarus Verilog 12+ and Python 3 (Ubuntu / WSL2). RISCOF also needs `riscv64-unknown-elf-gcc` and Spike; see [`riscof/README.md`](riscof/README.md).
 
 ```bash
-python3 sim/run_tests.py            # all testbenches
-python3 sim/run_tests.py alu core   # only some
-python3 sim/run_tests.py -v core    # with full simulator output
+python3 single_cycle/sim/run_tests.py
 ```
-
-Compile and run the full core by hand:
 
 ```bash
-mkdir -p build
-iverilog -g2012 -o build/core.vvp -c rtl.f tb/tb_core.sv
-vvp build/core.vvp
-gtkwave build/tb_core.vcd           # view waveforms
+python3 pipelined/sim/run_tests.py
 ```
 
-## How the core is tested
+```bash
+cd riscof && ./run_riscof.sh
+```
 
-`tb_core` loads `programs/smoke.hex` into instruction memory, runs the core until it reaches
-`ebreak`, then checks every register (x1–x31) and a block of result words in data memory
-against values worked out by hand from `programs/smoke.s`.
-
-## Roadmap
-
-1. Run the official RISC-V architectural tests with RISCOF, using Spike as the reference model
-2. 5-stage pipeline with hazard detection and forwarding
-3. Custom SIMD instructions for quantized neural-network inference
-4. FPGA implementation
+The first two run the fast regression suites: 13 and 18 testbenches, a few seconds each. The third runs the 38 RV32I architectural tests.
 
 ## Tools
 
-Icarus Verilog, GTKWave, Verilator, RISC-V GCC (`riscv64-unknown-elf`), Python 3
+Icarus Verilog, GTKWave, RISC-V GCC, Spike, RISCOF, Vivado, Python (NumPy, TFLite).

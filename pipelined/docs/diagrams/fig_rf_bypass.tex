@@ -1,0 +1,36 @@
+% fig_rf_bypass.tex - rf_bypass (pipelined/rtl/rf_bypass.sv): the register file's
+% write-back bypass, one mux per read port.
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\input{../../../single_cycle/docs/diagrams/rv32i_style}
+\begin{document}
+\begin{tikzpicture}
+  \draw[stage, fill=tintID] (0,0) rectangle (13,8.4);
+  \node[title, anchor=north west] at (0.25,8.25) {rf\_bypass \textmd{\normalsize --- write-back bypass}};
+  \foreach \n/\y/\a/\i in {m1/6.2/rs1/1, m2/4.2/rs2/2, m3/2.2/rs3/3} {
+    \muxR{\n}{7.2}{\y}{1.2}
+    \inport{0}{\y+0.3}{rf\_\a\_data}{31:0}
+    \draw[data] (0,\y+0.3) -- (\n-l |- 0,\y+0.3);
+    \node[mlbl, anchor=west] at (6.98,\y+0.3) {0};
+    \node[mlbl, anchor=west] at (6.98,\y-0.3) {1};
+    \draw[data] (4.6,\y-0.3) -- (\n-l |- 0,\y-0.3);
+    \node[block, minimum width=16mm, minimum height=7mm, font=\scriptsize] (c\i) at (5.2,\y+1.0)
+         {wb\_rd\_addr = \a\_addr\\[-2pt]\& wb\_we \& $\neq$ 0};
+    \draw[ctl] (c\i.east) -| (\n-top);
+    \outport{13}{\y}{\a\_data}{31:0}
+    \draw[data] (\n-out) -- (13,\y);
+  }
+  \inport{0}{0.9}{wb\_data}{31:0}
+  \draw[data] (0,0.9) -- (4.6,0.9) -- (4.6,5.9);
+  \foreach \y in {1.9, 3.9} \node[dot] at (4.6,\y) {};
+  \node[notetxt, anchor=north west, align=left] at (8.6,8.0)
+    {The instruction in WB writes rd at the end\\of the cycle; the one in ID reads during it.\\
+     Same register: pass the value being written.\\
+     Ports rs1\_addr, rs2\_addr, rs3\_addr (= the rd\\field), wb\_we, wb\_rd\_addr come in too.\\
+     regfile.sv is unchanged: there a same-cycle\\read must return the old value.};
+  \legend{0.2}{-1.0}
+\end{tikzpicture}
+\end{document}

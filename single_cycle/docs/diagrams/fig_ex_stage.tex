@@ -1,0 +1,172 @@
+% fig_ex_stage.tex - ex_stage (rtl/ex_stage.sv): operand muxes, ALU, branch unit,
+% pc+imm adder, jalr target and the redirect decision sent back to if_stage;
+% mul_unit (Zmmul) and nn_unit (DOT4.S8, CLIP.S8) beside the ALU, and the
+% ex_sel result mux.
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\input{rv32i_style}
+\begin{document}
+\begin{tikzpicture}
+  % ---- stage boundary ----
+  \draw[stage, fill=tintEX] (0,-0.6) rectangle (17,12.6);
+  \node[title, anchor=north west] at (0.25,12.45) {ex\_stage \textmd{\normalsize --- Execute}};
+
+  % ---- ports ----
+  \inport{0}{8.25}{rs1\_data}{31:0}
+  \inport{0}{7.55}{pc}{31:0}
+  \inport{0}{4.05}{imm}{31:0}
+  \inport{0}{3.35}{rs2\_data}{31:0}
+  \inport{0}{1.05}{rs3\_data}{31:0}
+  \ctopport{4.4}{12.6}{alu\_src\_a\_pc}{}
+  \ctopport{7.9}{12.6}{alu\_op}{3:0}
+  \ctopport{10.9}{12.6}{funct3}{2:0}
+  \ctopport{12.4}{12.6}{jalr}{}
+  \ctopport{14.6}{12.6}{branch}{}
+  \ctopport{15.4}{12.6}{jump}{}
+  \cinport{0}{1.75}{alu\_src\_b\_imm}{}
+  \node[cportbox] at (14.2,-0.6) {};
+  \node[csig, anchor=north] at (14.2,-0.7) {ex\_sel [1:0]};
+  \outport{17}{10.6}{pc\_redirect}{}
+  \outport{17}{9.4}{take\_branch}{}
+  \outport{17}{8.1}{redirect\_pc}{31:0}
+  \outport{17}{6.3}{alu\_y}{31:0}
+  \outport{17}{3.5}{ex\_result}{31:0}
+
+  % ---- operand muxes ----
+  \muxR{ma}{4.4}{7.9}{1.4}
+  \node[mlbl] at (4.25,8.25) {0};
+  \node[mlbl] at (4.25,7.55) {1};
+  \node[sig, anchor=south east] at (4.1,8.62) {mux A};
+  \muxR{mb}{4.4}{3.7}{1.4}
+  \node[mlbl] at (4.25,4.05) {1};
+  \node[mlbl] at (4.25,3.35) {0};
+  \node[sig, anchor=north east] at (4.1,2.98) {mux B};
+  \draw[data] (0,8.25) -- (4.12,8.25);
+  \draw[data] (0,7.55) -- (4.12,7.55);
+  \draw[data] (0,4.05) -- (4.12,4.05);
+  \draw[data] (0,3.35) -- (4.12,3.35);
+  \draw[ctl] (4.4,12.6) -- (ma-top);
+  \draw[ctl] (0,1.75) -- (4.4,1.75) -- (mb-bot);
+
+  % ---- pc + imm adder (branch / jal target) ----
+  \node[block, minimum width=8mm, minimum height=11mm, font=\large] (add) at (5.45,5.8) {+};
+  \node[dot] at (2.8,7.55) {};
+  \draw[data] (2.8,7.55) -- (2.8,6.1) -- (5.05,6.1);
+  \node[dot] at (3.2,4.05) {};
+  \draw[data] (3.2,4.05) -- (3.2,5.5) -- (5.05,5.5);
+  \draw[data] (add.east) -- (6.25,5.8) -- (6.25,9.2) -- node[sig, above, pos=0.35] {pc\_target} (11.8,9.2)
+              -- (11.8,8.45) -- (12.12,8.45);
+
+  % ---- ALU ----
+  \aluR{alu}{7.9}{6.3}{4.0}
+  \node[font=\bfseries\small, text=ink] at (alu-c) {ALU};
+  \node[sig] at ($(alu-c)+(0,-0.45)$) {u\_alu};
+  \draw[data] (ma-out) -- (6.7,7.9) -- (6.7,7.5) -- node[sig, above, pos=0.4] {a} (alu-a);
+  \draw[data] (mb-out) -- (6.7,3.7) -- (6.7,5.1) -- node[sig, below, pos=0.4] {b} (alu-b);
+  \node[sig, anchor=west] at (4.75,8.12) {alu\_a};
+  \node[sig, anchor=west] at (4.75,3.48) {alu\_b};
+  \draw[ctl] (7.9,12.6) -- (alu-op);
+  \draw[wire] (alu-out) -- (9.0,6.3);
+  \node[dot] at (9.0,6.3) {};
+  \draw[data] (9.0,6.3) -- node[sig, below, pos=0.28] {alu\_y} (17,6.3);
+
+  % ---- jalr target and redirect mux ----
+  \node[block, minimum width=14mm, minimum height=6mm, font=\scriptsize\ttfamily] (jt) at (10.6,7.75)
+        {\{y[31:1],0\}};
+  \draw[data] (9.0,6.3) -- (9.0,7.75) -- (jt.west);
+  \muxR{rm}{12.4}{8.1}{1.4}
+  \node[mlbl] at (12.25,8.45) {0};
+  \node[mlbl] at (12.25,7.75) {1};
+  \draw[data] (jt.east) -- (12.12,7.75);
+  \node[sig, anchor=south] at (10.6,8.05) {jalr\_target};
+  \draw[data] (rm-out) -- (17,8.1);
+  \draw[ctl] (12.4,12.6) -- (rm-top);
+
+  % ---- branch unit (rs1/rs2 arrive through net labels) ----
+  \node[block, minimum width=24mm, minimum height=12mm] (bu) at (10.9,10.3)
+        {\blk{Branch unit}{u\_br : branch\_unit}};
+  \draw[ctl] (10.9,12.6) -- (bu.north);
+  \node[sig, draw=ink, fill=white, rounded corners=1.5pt] (n1) at (8.75,10.55) {rs1\_data};
+  \node[sig, draw=ink, fill=white, rounded corners=1.5pt] (n2) at (8.75,10.05) {rs2\_data};
+  \draw[data] (n1.east) -- (9.7,10.55);
+  \draw[data] (n2.east) -- (9.7,10.05);
+  \node[dot] at (1.5,8.25) {};
+  \draw[wire] (1.5,8.25) -- (1.5,9.1);
+  \node[sig, draw=ink, fill=white, rounded corners=1.5pt, anchor=south] at (1.5,9.1) {rs1\_data};
+  \node[dot] at (1.5,3.35) {};
+  \draw[wire] (1.5,3.35) -- (1.5,2.5);
+  \node[sig, draw=ink, fill=white, rounded corners=1.5pt, anchor=north] at (1.5,2.5) {rs2\_data};
+
+  % ---- redirect decision ----
+  \node[block, minimum width=25mm, minimum height=14mm, font=\scriptsize\ttfamily] (rl) at (15.0,10.6)
+        {jalr | jump |\\(branch \& take\_branch)};
+  \draw[wire] (bu.east) -- (13.0,10.3);
+  \node[dot] at (13.0,10.3) {};
+  \draw[data] (13.0,10.3) -- (13.75,10.3);
+  \draw[data] (13.0,10.3) -- (13.0,9.4) -- (17,9.4);
+  \node[cdot] at (12.4,10.9) {};
+  \draw[ctl] (12.4,10.9) -- (13.75,10.9);
+  \draw[ctl] (14.6,12.6) -- (14.6,11.3);
+  \draw[ctl] (15.4,12.6) -- (15.4,11.3);
+  \draw[data] (rl.east) -- (17,10.6);
+  \node[sig, anchor=north west] at (13.05,10.25) {take\_branch};
+
+  % ---- extension units (rs1/rs2/funct3 arrive through net labels) ----
+  \node[block, minimum width=30mm, minimum height=12mm] (mu) at (10.0,3.5)
+        {\blk{Multiplier (Zmmul)}{u\_mul : mul\_unit}};
+  \node[flag, anchor=east] (m1) at (8.25,3.85) {rs1\_data};
+  \node[flag, anchor=east] (m2) at (8.25,3.15) {rs2\_data};
+  \draw[data] (m1.east) -- (8.5,3.85);
+  \draw[data] (m2.east) -- (8.5,3.15);
+  \draw[ctl] (11.1,4.75) -- (11.1,4.1);
+  \node[csig, anchor=south] at (11.1,4.75) {funct3};
+  \node[block, minimum width=30mm, minimum height=15mm] (nu) at (10.0,1.55)
+        {\blk{INT8 unit}{u\_nn : nn\_unit}\\[-1pt]{\scriptsize DOT4.S8, CLIP.S8}};
+  \node[flag, anchor=east] (n1) at (8.25,2.0) {rs1\_data};
+  \node[flag, anchor=east] (n2) at (8.25,1.5) {rs2\_data};
+  \draw[data] (n1.east) -- (8.5,2.0);
+  \draw[data] (n2.east) -- (8.5,1.5);
+  \draw[data] (0,1.05) -- node[sig, above, pos=0.93] {acc} (8.5,1.05);
+  \draw[ctl] (11.1,0.0) -- (11.1,0.8);
+  \node[csig, anchor=north] at (11.1,0.0) {funct3};
+  % result mux: 0 = alu_y, 1 = mul_y, 2 = nn_y
+  \muxR{xm}{14.2}{3.5}{2.6}
+  \node[mlbl] at (14.05,4.4) {0};
+  \node[mlbl] at (14.05,3.5) {1};
+  \node[mlbl] at (14.05,2.6) {2};
+  \node[dot] at (13.2,6.3) {};
+  \draw[data] (13.2,6.3) -- (13.2,4.4) -- (13.92,4.4);
+  \draw[data] (mu.east) -- node[sig, above, pos=0.5] {mul\_y} (13.92,3.5);
+  \draw[data] (nu.east) -- (12.6,1.55) -- (12.6,2.6) -- (13.92,2.6);
+  \node[sig, above] at (12.05,1.55) {nn\_y};
+  \draw[ctl] (14.2,-0.6) -- (xm-bot);
+  \draw[data] (xm-out) -- (17,3.5);
+  \node[sig, anchor=south west] at (14.2,4.85) {result mux};
+
+  % ---- bus widths ----
+  \wmark{(0.8,8.25)}{32}
+  \wmark{(0.8,7.55)}{32}
+  \wmark{(0.8,4.05)}{32}
+  \wmark{(0.8,3.35)}{32}
+  \wmark{(16.2,8.1)}{32}
+  \wmark{(16.2,6.3)}{32}
+  \wmark{(10.4,9.2)}{32}
+  \wmark{(0.8,1.05)}{32}
+  \wmark{(16.2,3.5)}{32}
+
+  % ---- notes ----
+  \legend{0.2}{-1.6}
+  \node[notetxt, anchor=north west] at (0.2,-2.0)
+       {alu\_a = alu\_src\_a\_pc ? pc : rs1\_data\qquad alu\_b = alu\_src\_b\_imm ? imm : rs2\_data\\
+        pc\_redirect = jalr | jump | (branch \& take\_branch)\qquad
+        redirect\_pc = jalr ? \{alu\_y[31:1], 1'b0\} : pc + imm\\
+        ex\_result = ex\_sel: 0 (EX\_ALU) alu\_y,\ 1 (EX\_MUL) mul\_y,\ 2 (EX\_NN) nn\_y.\quad
+        acc = rs3\_data = the old rd (DOT4.S8 accumulates into rd).\\
+        The data-memory address is alu\_y itself (loads and stores always use the ALU), so the result mux is not on the load path.\\
+        Three adders work in parallel: the ALU, pc + imm here, pc + 4 in if\_stage.
+        take\_branch is computed for every instruction; it only counts when branch = 1.};
+\end{tikzpicture}
+\end{document}

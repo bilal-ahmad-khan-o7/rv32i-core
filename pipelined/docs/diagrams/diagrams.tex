@@ -1,0 +1,60 @@
+% diagrams.tex - all diagrams of the pipelined core in one PDF.
+% Build (from this folder):   pdflatex diagrams.tex
+% Every fig_*.tex also compiles on its own:   pdflatex fig_pipeline.tex
+% The styles are the single-cycle core's (../../../single_cycle/docs/diagrams/rv32i_style.tex).
+\documentclass[10pt]{article}
+\usepackage[a4paper, landscape, margin=1.3cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{tikz}
+\usepackage[mode=tex]{standalone}
+\usepackage{caption}
+\usepackage[hidelinks]{hyperref}
+\input{../../../single_cycle/docs/diagrams/rv32i_style}
+\input{pipe_macros}
+\input{fig_regs}
+\captionsetup{font=small, labelfont=bf}
+\newcommand{\sv}[1]{\texttt{#1}}
+\newcommand{\fig}[3]{\noindent\begin{minipage}{\linewidth}\centering
+  \includestandalone[width=#2\linewidth]{#1}\captionof{figure}{#3}\end{minipage}}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries\color{ink} Pipelined RV32I core --- architecture diagrams}\\[4pt]
+  {\large RV32I + Zmmul + \sv{DOT4.S8}, \sv{CLIP.S8} \quad$\cdot$\quad five stages \quad$\cdot$\quad RTL in \sv{pipelined/rtl/}}
+\end{center}
+
+\noindent The single-cycle core's stage modules with the IF/ID, ID/EX, EX/MEM and MEM/WB registers
+on the wires between them. \sv{id\_stage}, \sv{ex\_stage} and \sv{wb\_stage} are reused unchanged;
+\sv{if\_stage} and \sv{mem\_stage} change because both memories now read synchronously, as FPGA block
+RAM does. The figures use the single-cycle diagrams' conventions: thick border = holds state, thin =
+combinational, green trapezium = multiplexer, solid navy = data, dashed orange = control. Every name is
+the exact SystemVerilog name.
+
+\medskip
+\fig{fig_pipeline}{0.97}{The pipelined datapath (\sv{riscv\_core.sv}). Forwarding muxes sit in front of
+\sv{ex\_stage}; \sv{rf\_bypass} after the register file; the data memory straddles EX/MEM because its address
+register is the address half of EX/MEM. \sv{pc\_redirect} from EX is the flush.}
+
+\clearpage
+\fig{fig_if_stage}{0.8}{\sv{if\_stage}: the instruction memory is addressed with \sv{next\_pc}.}
+\vspace{6mm}
+\fig{fig_mem_stage}{0.8}{\sv{mem\_stage}: the access is issued from EX and completed in MEM.}
+
+\clearpage
+\fig{fig_forward_unit}{0.95}{\sv{forward\_unit} and the forwarding muxes.}
+\vspace{6mm}
+\fig{fig_rf_bypass}{0.62}{\sv{rf\_bypass}: the register file's write-back bypass.}
+
+\clearpage
+\fig{fig_hazard_unit}{0.75}{\sv{hazard\_unit}: load-use stall, redirect flush and fetch stop.}
+
+\clearpage
+\noindent\begin{minipage}[t]{0.24\linewidth}\centering\includestandalone[width=\linewidth]{fig_if_id_reg}\end{minipage}\hfill
+\begin{minipage}[t]{0.24\linewidth}\centering\includestandalone[width=\linewidth]{fig_id_ex_reg}\end{minipage}\hfill
+\begin{minipage}[t]{0.24\linewidth}\centering\includestandalone[width=\linewidth]{fig_ex_mem_reg}\end{minipage}\hfill
+\begin{minipage}[t]{0.24\linewidth}\centering\includestandalone[width=\linewidth]{fig_mem_wb_reg}\end{minipage}
+\captionof{figure}{The four pipeline registers (\sv{if\_id\_reg}, \sv{id\_ex\_reg}, \sv{ex\_mem\_reg}, \sv{mem\_wb\_reg}).}
+\end{document}
